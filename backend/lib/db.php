@@ -16,4 +16,3 @@ function getDbConnection() {
     }
     
     return $db;
-}
