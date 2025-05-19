@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Здесь будет логика авторизации
-    console.log('Login attempt:', formData);
+    console.log("Login attempt:", formData);
   };
 
   return (
@@ -57,11 +57,13 @@ function Login() {
           <button type="submit">Войти</button>
         </form>
         <div className="register-link">
-          <p>Нет аккаунта? <Link to="/register">Зарегистрироваться</Link></p>
+          <p>
+            Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-export default Login; 
+export default Login;

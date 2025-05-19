@@ -68,13 +68,18 @@ nav a:hover {
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 90px); /* Adjust based on nav height */
-  background-image: url('/underwater-cave.png'); /* Обновлено расширение файла */
+  background-image: url("/underwater-cave.png"); /* Обновлено расширение файла */
   background-size: cover; /* Изменено на cover, чтобы изображение занимало весь экран */
   background-position: center;
 }
 
 .login-container {
-  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.2
+  ); /* Semi-transparent white background */
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
@@ -137,7 +142,12 @@ nav a:hover {
 
 /* Copying button styles from login for consistency */
 .login-container button {
-  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for glassy effect */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.2
+  ); /* Semi-transparent white for glassy effect */
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.4); /* Subtle white border */
   padding: 10px 20px;
@@ -200,7 +210,12 @@ button {
 /* Styles for buttons inside login/register containers (glassy, full width) */
 .login-container button,
 .register-container button {
-  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for glassy effect */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.2
+  ); /* Semi-transparent white for glassy effect */
   border: 1px solid rgba(255, 255, 255, 0.4); /* Subtle white border */
   margin-top: 1rem; /* Space above button */
   width: 100%; /* Make button full width */
@@ -260,7 +275,7 @@ html {
 }
 
 .home-section-one .home-section-inner {
-  background-image: url('/1.jpg');
+  background-image: url("/1.jpg");
   background-size: cover; /* Фон покрывает внутренний контейнер */
   background-position: center center;
   background-repeat: no-repeat;
@@ -268,7 +283,7 @@ html {
 }
 
 .home-section-two .home-section-inner {
-  background-image: url('/2.jpg');
+  background-image: url("/2.jpg");
   background-size: cover; /* Фон покрывает внутренний контейнер */
   background-position: center center;
   background-repeat: no-repeat;
@@ -314,14 +329,16 @@ html {
 }
 
 .letters .letter {
-  font-family: 'Poppins', sans-serif; /* Применяю шрифт Poppins */
+  font-family: "Poppins", sans-serif; /* Применяю шрифт Poppins */
   font-weight: 900; /* Устанавливаю жирное начертание */
   display: inline-block; /* Каждая буква как отдельный inline-block элемент */
   color: white; /* Белый цвет текста */
   text-shadow: 25px 0 35px rgba(0, 0, 0, 0.6); /* Сделана тень помягче */
   position: relative;
   z-index: 1; /* Добавлен базовый z-index для наложения */
-  margin-left: calc(var(--index) * -0.5rem); /* Уменьшен отрицательный отступ для лучшей читаемости */
+  margin-left: calc(
+    var(--index) * -0.5rem
+  ); /* Уменьшен отрицательный отступ для лучшей читаемости */
   /* Возможно, потребуется добавить transition и transition-delay для анимации */
 }
 
@@ -351,7 +368,7 @@ html {
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 90px); /* Adjust based on nav height */
-  background-image: url('/underwater-cave.png'); /* Добавляем фоновое изображение */
+  background-image: url("/underwater-cave.png"); /* Добавляем фоновое изображение */
   background-size: cover; /* Убедимся, что фон покрывает всю секцию */
   background-position: center;
 }
@@ -397,7 +414,12 @@ html {
 
 /* Applying glassy button styles to the register button */
 .register-container button {
-  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for glassy effect */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.2
+  ); /* Semi-transparent white for glassy effect */
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.4); /* Subtle white border */
   padding: 10px 20px;
