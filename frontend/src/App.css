@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  padding: 20px;
 }
 
 .App-logo {
@@ -36,3 +37,402 @@
     transform: rotate(360deg);
   }
 }
+
+nav {
+  background-color: #282c34;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+nav a:hover {
+  color: #61dafb;
+}
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 90px); /* Adjust based on nav height */
+  background-image: url('/underwater-cave.png'); /* Обновлено расширение файла */
+  background-size: cover; /* Изменено на cover, чтобы изображение занимало весь экран */
+  background-position: center;
+}
+
+.login-container {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  backdrop-filter: blur(5px); /* Add frosted glass effect */
+}
+
+.login-container h1 {
+  margin-bottom: 2rem;
+  color: white; /* Изменен цвет текста на белый */
+}
+
+/* Copying form group styles from login for consistency */
+.login-container .form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-container .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: white; /* Изменен цвет текста на белый */
+}
+
+.login-container .form-group input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Copying options styles from login for consistency */
+.login-container .options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.login-container .options label {
+  color: white; /* Изменен цвет текста на белый */
+}
+
+.login-container .options a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-container .options a:hover {
+  text-decoration: underline;
+}
+
+/* Copying button styles from login for consistency */
+.login-container button {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for glassy effect */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Subtle white border */
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 1rem;
+  width: 100%; /* Make button full width */
+  backdrop-filter: blur(5px); /* Add frosted glass effect */
+}
+
+.login-container button:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Adjust hover effect */
+}
+
+/* Copying register link style from login for consistency */
+.login-container .register-link {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.login-container .register-link p {
+  color: white; /* Изменен цвет текста на белый */
+  font-size: 0.9rem;
+}
+
+.login-container .register-link a {
+  color: #007bff; /* Example link color */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-container .register-link a:hover {
+  text-decoration: underline;
+}
+
+/* Basic button styles */
+button {
+  color: white;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  border-radius: 5px; /* Default slightly rounded corners */
+  cursor: pointer;
+  border: none; /* Default no border */
+}
+
+/* Specific styles for the button on the first home section */
+.home-section-one button {
+  background-color: #007bff; /* Example original button color */
+  margin: 1rem auto; /* Center horizontally and add top margin */
+  width: 200px; /* Set fixed width */
+  border-radius: 25px; /* Apply rounded corners as previously requested for this button */
+  /* Remove backdrop-filter and glassy border if they were applied here */
+}
+
+.home-section-one button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Styles for buttons inside login/register containers (glassy, full width) */
+.login-container button,
+.register-container button {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for glassy effect */
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Subtle white border */
+  margin-top: 1rem; /* Space above button */
+  width: 100%; /* Make button full width */
+  backdrop-filter: blur(5px); /* Add frosted glass effect */
+  border-radius: 25px; /* Rounded corners for glassy buttons */
+}
+
+.login-container button:hover,
+.register-container button:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Adjust hover effect */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Удалены стили home-page, если были */
+/* .home-page {} */
+
+/* Удалены стили home-background-container */
+/* .home-background-container {
+  width: 100%;
+  height: 200vh;
+  background-image: url('/whale-background.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: relative;
+} */
+
+.home-page {
+  display: flex; /* Используем Flexbox */
+  flex-direction: column; /* Располагаем элементы вертикально */
+  /* Убедитесь, что здесь нет конфликтующих стилей позиционирования */
+}
+
+.home-section {
+  /* height: 100vh; */ /* Удалена фиксированная высота */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white; /* Text color for better visibility on a background image */
+  text-align: center;
+  position: relative; /* Оставляем position: relative для позиционирования inner */
+  /* background-size: cover; */ /* Удаляем фон с самой секции */
+  /* background-position: center center; */
+  /* background-repeat: no-repeat; */
+  margin-bottom: 0; /* Убираем нижний отступ */
+}
+
+.home-section-inner {
+  width: 100%;
+  height: 0; /* Высота определяется padding-bottom */
+  padding-bottom: 56.25%; /* Здесь нужно указать (высота изображения / ширина изображения) * 100% */
+  position: relative; /* Для позиционирования содержимого и фона */
+  overflow: hidden; /* Скрываем все, что выходит за пределы */
+}
+
+.home-section-one .home-section-inner {
+  background-image: url('/1.jpg');
+  background-size: cover; /* Фон покрывает внутренний контейнер */
+  background-position: center center;
+  background-repeat: no-repeat;
+  padding-bottom: 75%; /* Увеличена высота секции */
+}
+
+.home-section-two .home-section-inner {
+  background-image: url('/2.jpg');
+  background-size: cover; /* Фон покрывает внутренний контейнер */
+  background-position: center center;
+  background-repeat: no-repeat;
+  padding-bottom: 75%; /* Увеличена высота секции */
+}
+
+.home-section .content {
+  position: absolute; /* Абсолютное позиционирование содержимого */
+  top: 0; /* Прижимаем к верху */
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* background-color: rgba(0, 0, 0, 0.5); */ /* Удалена полупрозрачная плашка */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.home-section h1 {
+  /* font-family: 'Montserrat', sans-serif; */ /* Шрифт будет на .letters .letter */
+  /* font-size: 12rem; */ /* Размер шрифта будет на .letters .letter */
+  margin-bottom: 1rem;
+  /* color: white; */ /* Цвет будет на .letters .letter */
+  /* text-shadow: 25px 0 35px rgba(0, 0, 0, 0.5); */ /* Тень будет на .letters .letter */
+  /* letter-spacing: -60px; */ /* Интервал будет на .letters */
+}
+
+.letters {
+  font-size: 6rem; /* Размер шрифта для всего контейнера уменьшен в два раза */
+  line-height: 1; /* Убираем лишний межстрочный интервал */
+  white-space: nowrap; /* Предотвращаем перенос строки */
+  /* letter-spacing: -0.1em; */ /* Можно использовать для базового интервала между буквами */
+  display: inline-block; /* Чтобы контейнер занимал только необходимую ширину */
+  text-align: center; /* Выравнивание по центру */
+}
+
+.letters div {
+  margin-bottom: 0.05rem; /* Уменьшен нижний отступ в два раза */
+  text-transform: uppercase;
+}
+
+.letters .letter {
+  font-family: 'Poppins', sans-serif; /* Применяю шрифт Poppins */
+  font-weight: 900; /* Устанавливаю жирное начертание */
+  display: inline-block; /* Каждая буква как отдельный inline-block элемент */
+  color: white; /* Белый цвет текста */
+  text-shadow: 25px 0 35px rgba(0, 0, 0, 0.6); /* Сделана тень помягче */
+  position: relative;
+  z-index: 1; /* Добавлен базовый z-index для наложения */
+  margin-left: calc(var(--index) * -0.5rem); /* Уменьшен отрицательный отступ для лучшей читаемости */
+  /* Возможно, потребуется добавить transition и transition-delay для анимации */
+}
+
+/* .home-section p { ... } */
+/* .home-section button { ... } */
+/* .home-section a { ... } */
+
+/* Hide navigation if not needed on the home page */
+/* Consider conditionally rendering the navigation or hiding it with CSS */
+
+/* Удалены стили для рукописного шрифта во второй секции */
+/*
+.home-section-two .content p {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
+}
+
+.home-section-two .content p a {
+  font-family: inherit;
+  font-size: inherit;
+}
+*/
+
+/* Add styles for the registration page */
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 90px); /* Adjust based on nav height */
+  background-image: url('/underwater-cave.png'); /* Добавляем фоновое изображение */
+  background-size: cover; /* Убедимся, что фон покрывает всю секцию */
+  background-position: center;
+}
+
+.register-container {
+  background-color: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый фон */
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  backdrop-filter: blur(5px); /* Эффект матового стекла */
+}
+
+.register-container h1 {
+  margin-bottom: 2rem;
+  color: white; /* Изменен цвет текста на белый */
+}
+
+.register-container .form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.register-container .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: white; /* Изменен цвет текста на белый */
+}
+
+.register-container .form-group input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Applying glassy button styles to the register button */
+.register-container button {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for glassy effect */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Subtle white border */
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  border-radius: 25px; /* Rounded corners for glassy button */
+  cursor: pointer;
+  margin-top: 1rem; /* Space above button */
+  width: 100%; /* Make button full width */
+  backdrop-filter: blur(5px); /* Add frosted glass effect */
+}
+
+.register-container button:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Adjust hover effect */
+}
+
+/* Copying login link style for consistency */
+.register-container .login-link {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.register-container .login-link p {
+  color: white; /* Изменен цвет текста на белый */
+  font-size: 0.9rem;
+}
+
+.register-container .login-link a {
+  color: #007bff; /* Example link color */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.register-container .login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Remove or adjust the original login button styles if they conflict */
+/* .login-page button { ... } */
