@@ -1,0 +1,411 @@
+/* Theme Switcher */
+.theme-switcher {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.theme-button {
+  background: var(--card-bg);
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  color: var(--text-primary);
+}
+
+.theme-button:hover {
+  transform: scale(1.1);
+  background: var(--accent-color);
+  color: white;
+}
+
+/* Light Theme (Default) */
+.theme-light {
+  --bg-primary: #f5f7fa;
+  --bg-secondary: #e4e8eb;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --accent-color: #3498db;
+  --accent-hover: #2980b9;
+  --card-bg: white;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --modal-bg: rgba(255, 255, 255, 0.95);
+  --button-bg: #3498db;
+  --button-hover: #2980b9;
+  --button-disabled: #bdc3c7;
+}
+
+/* Dark Theme */
+.theme-dark {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --accent-color: #8A2BE2;
+  --accent-hover: #9B4DEB;
+  --card-bg: #2d2d2d;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --modal-bg: rgba(0, 0, 0, 0.95);
+  --button-bg: #8A2BE2;
+  --button-hover: #9B4DEB;
+  --button-disabled: #4a4a4a;
+}
+
+/* Nature Theme */
+.theme-nature {
+  --bg-primary: #f0f7f0;
+  --bg-secondary: #e0efe0;
+  --text-primary: #2c5530;
+  --text-secondary: #4a7850;
+  --accent-color: #2e7d32;
+  --accent-hover: #388e3c;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(46, 125, 50, 0.1);
+  --modal-bg: rgba(240, 247, 240, 0.95);
+  --button-bg: #2e7d32;
+  --button-hover: #388e3c;
+  --button-disabled: #a5d6a7;
+}
+
+/* Ocean Theme */
+.theme-ocean {
+  --bg-primary: #e3f2fd;
+  --bg-secondary: #bbdefb;
+  --text-primary: #0d47a1;
+  --text-secondary: #1976d2;
+  --accent-color: #0288d1;
+  --accent-hover: #039be5;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(2, 136, 209, 0.1);
+  --modal-bg: rgba(227, 242, 253, 0.95);
+  --button-bg: #0288d1;
+  --button-hover: #039be5;
+  --button-disabled: #81d4fa;
+}
+
+.books-page {
+  padding: 2rem;
+  max-width: 100%;
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding-top: 5rem;
+}
+
+.books-page h1 {
+  color: var(--text-primary);
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 4px var(--card-shadow);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2.5rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.book-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  box-shadow: 0 8px 32px var(--card-shadow);
+  position: relative;
+}
+
+.book-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 12px 40px var(--card-shadow);
+}
+
+.book-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, var(--accent-color), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.book-card:hover::before {
+  opacity: 0.1;
+}
+
+.book-cover {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--card-shadow);
+  transition: transform 0.4s ease;
+}
+
+.book-card:hover .book-cover {
+  transform: scale(1.05);
+}
+
+.book-info {
+  padding: 1.8rem;
+  background: var(--card-bg);
+}
+
+.book-title {
+  font-size: 1.6rem;
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.book-author {
+  color: var(--accent-color);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.book-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Book Reader Modal Styles */
+.book-reader-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--modal-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.book-reader-content {
+  background: var(--card-bg);
+  border-radius: 25px;
+  padding: 3rem;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 15px 50px var(--card-shadow);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.close-button {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--bg-secondary);
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: rotate(90deg);
+}
+
+.book-text {
+  color: var(--text-primary);
+  line-height: 2;
+  font-size: 1.2rem;
+  white-space: pre-wrap;
+  margin: 2rem 0;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border-radius: 15px;
+  border: 1px solid var(--card-shadow);
+}
+
+.page-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--card-shadow);
+}
+
+.page-button {
+  background: var(--button-bg);
+  border: none;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.page-button:hover:not(:disabled) {
+  background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px var(--card-shadow);
+}
+
+.page-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--button-disabled);
+}
+
+.page-number {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 500;
+  background: var(--bg-secondary);
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+}
+
+/* Loading and Error States */
+.books-page > div:first-child {
+  text-align: center;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  padding: 2rem;
+  background: var(--card-bg);
+  border-radius: 15px;
+  margin: 2rem auto;
+  max-width: 400px;
+  box-shadow: 0 8px 32px var(--card-shadow);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Header Styles */
+.books-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--card-bg);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px var(--card-shadow);
+  z-index: 1000;
+}
+
+.logo {
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  margin-right: auto;
+}
+
+.logo:hover {
+  color: var(--accent-color);
+}
+
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-right: 2rem;
+}
+
+.profile-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.profile-button:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+.nav-button {
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  background: var(--button-bg);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.nav-button:hover {
+  background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--card-shadow);
+} 
