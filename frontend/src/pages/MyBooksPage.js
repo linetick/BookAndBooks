@@ -31,27 +31,20 @@ const BooksPage = () => {
   };
 
   useEffect(() => {
-    document.body.className = `theme-${theme}`;
-  }, [theme]);
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get("http://localhost/api/my_books.php", {
+          withCredentials: true,
+        });
+        setBooks(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Не удалось загрузить книги. Возможно, вы не авторизованы.");
+        setLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    // Временные тестовые данные
-    const testBooks = [
-      {
-        id: 1,
-        title: "Тайны океана",
-        author: "Анна Морская",
-        cover_path:
-          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=60",
-        description: "Захватывающая история о глубинах океана и его обитателях",
-      },
-    ];
-
-    // Имитация загрузки данных
-    setTimeout(() => {
-      setBooks(testBooks);
-      setLoading(false);
-    }, 1000);
+    fetchBooks();
   }, []);
 
   const fetchBooks = async () => {
@@ -106,7 +99,7 @@ const BooksPage = () => {
     formData.append("description", newBook.description);
     formData.append("cover", coverFile); // Файл
 
-    await axios.post("http://localhost:8000/api/book_create.php", formData, {
+    await axios.post("http://localhost/api/book_create.php", formData, {
       withCredentials: true,
       headers: {
         "Content-Type": "multipart/form-data",
