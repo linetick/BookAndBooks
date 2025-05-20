@@ -19,14 +19,25 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Таблица книг
+-- CREATE TABLE IF NOT EXISTS `books` (
+--   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+--   `user_id` INT UNSIGNED NOT NULL,
+--   `title` VARCHAR(255) NOT NULL,
+--   `cover_path` VARCHAR(255),
+--   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE IF NOT EXISTS `books` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `user_id` INT UNSIGNED NOT NULL,
   `title` VARCHAR(255) NOT NULL,
+  `description` TEXT,
   `cover_path` VARCHAR(255),
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 
 -- Таблица страниц книг
 CREATE TABLE IF NOT EXISTS `pages` (

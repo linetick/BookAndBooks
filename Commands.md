@@ -16,7 +16,10 @@
 
 # SQL
 
-`docker exec -it book-mysql bash` Чтобы зайти в sql
+`docker exec -it book-mysql bash` Чтобы зайти в bash докера
+`mysql -u root -p` Чтобы зайти в sql в баше
+`show tables;` Посмотреть таблицы
+`describe "table"` Посмотреть состав таблицы
 
 # docker
 
