@@ -1,0 +1,8 @@
+{
+  "name": "bookandbooks/backend",
+  "description": "Backend for BookAndBooks project",
+  "type": "project",
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "require": {}
+}

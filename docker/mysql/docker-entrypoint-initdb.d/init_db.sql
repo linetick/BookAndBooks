@@ -1,0 +1,51 @@
+CREATE DATABASE IF NOT EXISTS book_project 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'book_user'@'%' IDENTIFIED BY 'secret123';
+GRANT ALL PRIVILEGES ON book_project.* TO 'book_user'@'%';
+FLUSH PRIVILEGES;
+
+USE book_project;
+
+-- Таблица пользователей
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `login` VARCHAR(50) UNIQUE NOT NULL,
+  `email` VARCHAR(255) UNIQUE NOT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Таблица книг
+-- CREATE TABLE IF NOT EXISTS `books` (
+--   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+--   `user_id` INT UNSIGNED NOT NULL,
+--   `title` VARCHAR(255) NOT NULL,
+--   `cover_path` VARCHAR(255),
+--   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS `books` (
+  `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT UNSIGNED NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT,
+  `cover_path` VARCHAR(255),
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- Таблица страниц книг
+CREATE TABLE IF NOT EXISTS `pages` (
+  `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `book_id` INT UNSIGNED NOT NULL,
+  `page_number` INT UNSIGNED NOT NULL,
+  `content` TEXT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`book_id`) REFERENCES `books`(`id`) ON DELETE CASCADE,
+  UNIQUE KEY `book_page` (`book_id`, `page_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

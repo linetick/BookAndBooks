@@ -1,7 +1,31 @@
 version: "3.8"
 
 services:
-  # PHP-сервер
+  # MySQL сервис
+  mysql:
+    image: mysql:8.0
+    container_name: book-mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - book-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # PHP API сервер
   api:
     build:
       context: .
@@ -15,11 +39,15 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - book-network
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
 
-  # Nginx
+  # Nginx сервер
   webserver:
     image: nginx:alpine
     container_name: book-webserver
@@ -29,29 +57,14 @@ services:
     volumes:
       - ./backend:/var/www/html
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/build:/var/www/html/frontend # Для статики React
     depends_on:
       - api
     networks:
       - book-network
+    restart: unless-stopped
 
-  # MySQL
-  mysql:
-    image: mysql:8.0
-    container_name: book-mysql
-    environment:
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-    ports:
-      - "3306:3306"
-    networks:
-      - book-network
-
-  # React приложение
+  # React приложение (development)
   frontend:
     build:
       context: ./frontend
@@ -60,7 +73,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_URL=http://localhost/api
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - REACT_APP_API_URL=http://api # Внутреннее имя сервиса
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -68,9 +83,13 @@ services:
       - book-network
     stdin_open: true
     tty: true
+    depends_on:
+      - api
+    restart: unless-stopped
 
 volumes:
   mysql-data:
+    driver: local
 
 networks:
   book-network:
