@@ -1,40 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './HomePage.css';
+import '../App.css';
 
 const HomePage = () => {
-  const [theme, setTheme] = useState('light');
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check authentication status on component mount
+  useEffect(() => {
+    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+    setIsAuthenticated(authStatus);
+  }, []);
+
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme || 'light';
+  });
 
   const toggleTheme = () => {
-    setTheme(prevTheme => {
-      const themes = ['light', 'dark', 'nature', 'ocean'];
-      const currentIndex = themes.indexOf(prevTheme);
-      const nextIndex = (currentIndex + 1) % themes.length;
-      return themes[nextIndex];
-    });
+    const themes = ['light', 'dark', 'nature', 'ocean'];
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    const newTheme = themes[nextIndex];
+    setTheme(newTheme);
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
   };
 
+  // Set initial theme
   useEffect(() => {
     document.body.setAttribute('data-theme', theme);
-  }, [theme]);
+  }, []);
+
+  const handleProfileClick = () => {
+    // Placeholder for profile click logic
+    console.log('Profile button clicked');
+  };
 
   return (
     <div className="home-page">
-      <div className="theme-switcher">
-        <button className="theme-button" onClick={toggleTheme} title="Сменить тему">
-          <i className={`fas fa-${theme === 'light' ? 'moon' : 
-            theme === 'dark' ? 'sun' : 
-            theme === 'nature' ? 'leaf' : 'water'}`}></i>
-        </button>
-      </div>
-
       <header className="header">
         <Link to="/" className="logo">BookAndBooks</Link>
         <div className="header-buttons">
-          <button className="profile-button" title="Перейти в профиль">
-            <i className="fas fa-user"></i>
-          </button>
-          <Link to="/login" className="nav-button">Войти</Link>
+          {isAuthenticated ? (
+            <button className="profile-button" title="Перейти в профиль" onClick={handleProfileClick}>
+              <i className="fas fa-user"></i>
+            </button>
+          ) : (
+            <button className="nav-button" onClick={() => navigate('/login')}>Войти</button>
+          )}
+          <div className="theme-switcher">
+            <button className="theme-button" onClick={toggleTheme} title="Сменить тему">
+              {theme === 'light' && '🌞'}
+              {theme === 'dark' && '🌙'}
+              {theme === 'nature' && '🌿'}
+              {theme === 'ocean' && '🌊'}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -44,7 +67,7 @@ const HomePage = () => {
           Ваш персональный портал в мир литературы. Здесь вы найдете тысячи книг,
           сможете создавать свои коллекции и делиться впечатлениями с другими читателями.
         </p>
-        <Link to="/books" className="nav-button">Начать чтение</Link>
+        <button className="nav-button" onClick={() => navigate('/books')}>Начать чтение</button>
       </section>
 
       <section className="home-section">

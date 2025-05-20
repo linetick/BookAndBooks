@@ -1,16 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../App.css'; // Import App.css for shared styles like header and auth container
+import './LoginPage.css';
+import '../App.css';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme || 'light';
+  });
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const themes = ['light', 'dark', 'nature', 'ocean'];
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    const newTheme = themes[nextIndex];
+    setTheme(newTheme);
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Здесь будет логика входа
-    console.log('Login attempt:', { email, password });
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login, password }),
+      });
+      if (response.ok) {
+        localStorage.setItem('isAuthenticated', 'true');
+        navigate('/');
+      } else {
+        alert('Неверный логин или пароль');
+      }
+    } catch (error) {
+      alert('Ошибка соединения с сервером');
+    }
   };
 
   return (
@@ -18,27 +50,32 @@ const LoginPage = () => {
       <header className="header">
         <Link to="/" className="logo">BookAndBooks</Link>
         <div className="header-buttons">
-          <button className="profile-button" title="Перейти в профиль">
-            <i className="fas fa-user"></i>
-          </button>
+          <div className="theme-switcher">
+            <button className="theme-button" onClick={toggleTheme} title="Сменить тему">
+              {theme === 'light' && '🌞'}
+              {theme === 'dark' && '🌙'}
+              {theme === 'nature' && '🌿'}
+              {theme === 'ocean' && '🌊'}
+            </button>
+          </div>
         </div>
       </header>
-
       <div className="auth-container">
         <h1>Добро пожаловать</h1>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
+            <label htmlFor="login">Логин</label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              id="login"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
               required
               placeholder=" "
             />
-            <label htmlFor="email">Email</label>
           </div>
           <div className="form-group">
+            <label htmlFor="password">Пароль</label>
             <input
               type="password"
               id="password"
@@ -47,7 +84,6 @@ const LoginPage = () => {
               required
               placeholder=" "
             />
-            <label htmlFor="password">Пароль</label>
           </div>
           <button type="submit" className="auth-button">
             <span>Войти</span>

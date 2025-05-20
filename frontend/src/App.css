@@ -18,6 +18,51 @@
   --success-color: #28a745;
 }
 
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --accent-color: #8A2BE2;
+  --accent-hover: #9B4DEB;
+  --card-bg: #2d2d2d;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --modal-bg: rgba(0, 0, 0, 0.95);
+  --button-bg: #8A2BE2;
+  --button-hover: #9B4DEB;
+  --button-disabled: #4a4a4a;
+}
+
+[data-theme="nature"] {
+  --bg-primary: #f0f7f0;
+  --bg-secondary: #e0efe0;
+  --text-primary: #2c5530;
+  --text-secondary: #4a7850;
+  --accent-color: #2e7d32;
+  --accent-hover: #388e3c;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(46, 125, 50, 0.1);
+  --modal-bg: rgba(240, 247, 240, 0.95);
+  --button-bg: #2e7d32;
+  --button-hover: #388e3c;
+  --button-disabled: #a5d6a7;
+}
+
+[data-theme="ocean"] {
+  --bg-primary: #e3f2fd;
+  --bg-secondary: #bbdefb;
+  --text-primary: #0d47a1;
+  --text-secondary: #1976d2;
+  --accent-color: #0288d1;
+  --accent-hover: #039be5;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(2, 136, 209, 0.1);
+  --modal-bg: rgba(227, 242, 253, 0.95);
+  --button-bg: #0288d1;
+  --button-hover: #039be5;
+  --button-disabled: #81d4fa;
+  }
+
 body {
   margin: 0;
   padding: 0;
@@ -25,6 +70,7 @@ body {
   background: var(--bg-primary);
   min-height: 100vh;
   color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Header Styles */
@@ -48,7 +94,7 @@ body {
   font-weight: 600;
   text-decoration: none;
   margin-right: auto;
-}
+  }
 
 .header-buttons {
   display: flex;
@@ -91,113 +137,33 @@ body {
   background: var(--button-hover);
 }
 
-/* Login and Register Page Styles */
-.auth-page {
-  padding-top: 5rem;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  background: var(--bg-secondary);
+/* Theme Switcher */
+.theme-switcher {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
 }
 
-.auth-container {
+.theme-button {
   background: var(--card-bg);
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px var(--card-shadow);
-  width: 100%;
-  max-width: 400px;
-  margin: 2rem;
-}
-
-.auth-container h1 {
-  color: var(--text-primary);
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-weight: 600;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 0.8rem 1rem;
-  border: 1px solid var(--input-border);
-  border-radius: 4px;
-  background: var(--input-bg);
-  color: var(--text-primary);
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: var(--input-focus);
-}
-
-.auth-button {
-  width: 100%;
-  padding: 0.8rem;
-  background: var(--button-bg);
-  color: white;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.2rem;
   cursor: pointer;
-  margin-top: 1rem;
+  padding: 8px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  color: var(--text-primary);
 }
 
-.auth-button:hover {
-  background: var(--button-hover);
-}
-
-.auth-links {
-  text-align: center;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--input-border);
-}
-
-.auth-links p {
-  color: var(--text-secondary);
-  margin: 0 0 0.5rem 0;
-  font-size: 0.9rem;
-}
-
-.auth-links a {
-  color: var(--accent-color);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.auth-links a:hover {
-  color: var(--accent-hover);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .auth-container {
-    margin: 1rem;
-    padding: 1.5rem;
-  }
-
-  .auth-container h1 {
-    font-size: 1.8rem;
-  }
-
-  .form-group input {
-    padding: 0.8rem;
-  }
+.theme-button:hover {
+  transform: scale(1.1);
+  background: var(--accent-color);
+  color: white;
 }

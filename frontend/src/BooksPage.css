@@ -137,6 +137,7 @@
   cursor: pointer;
   box-shadow: 0 8px 32px var(--card-shadow);
   position: relative;
+  display: block;
 }
 
 .book-card:hover {
