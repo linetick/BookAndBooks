@@ -160,7 +160,7 @@ const BooksPage = () => {
             onClick={() => handleBookClick(book)}
           >
             <img
-              src={book.cover_path}
+              src={`http://localhost/${book.cover_path}`}
               alt={book.title}
               className="book-cover"
             />
