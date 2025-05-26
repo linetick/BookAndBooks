@@ -64,8 +64,10 @@ const LoginPage = () => {
               placeholder=" "
             />
           </div>
-          <div style={{ textAlign: 'right', marginBottom: 16 }}>
-            <Link to="/forgot-password" className="forgot-password-link">Забыли пароль?</Link>
+          <div style={{ textAlign: "right", marginBottom: 16 }}>
+            <Link to="/forgot-password" className="forgot-password-link">
+              Забыли пароль?
+            </Link>
           </div>
           <button type="submit" className="auth-button">
             <span>Войти</span>

@@ -3,21 +3,28 @@ import { Link, useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
 import "../App.css";
 import { ThemeToggle } from "../components";
+//import { set } from "mongoose";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       alert("Пароли не совпадают");
       return;
     }
+
+    setIsLoading(true); // начинаем загрузку
+
     try {
       const response = await fetch("http://localhost/api/register.php", {
         method: "POST",
@@ -25,16 +32,22 @@ const RegisterPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, login, password }),
       });
+
       if (response.ok) {
-        navigate("/login");
+        setShowPopup(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
       } else if (response.status === 422) {
         const data = await response.json();
-        setFormErrors(data.errors); // Сохран
+        setFormErrors(data.errors);
       } else {
         alert("Неверный логин или пароль");
       }
     } catch (error) {
       alert("Ошибка соединения с сервером");
+    } finally {
+      setIsLoading(false); // загрузка завершена
     }
   };
 
@@ -110,10 +123,18 @@ const RegisterPage = () => {
               <p className="error-text">{formErrors.confirmPassword}</p>
             )}
           </div>
-          <button type="submit" className="auth-button">
-            <span>Зарегистрироваться</span>
+          <button type="submit" className="auth-button" disabled={isLoading}>
+            {isLoading ? (
+              <span className="spinner"></span>
+            ) : (
+              <span>Зарегистрироваться</span>
+            )}
           </button>
         </form>
+
+        {showPopup && (
+          <div className="popup-message">Подтверждение отправлено на почту</div>
+        )}
         <div className="auth-links">
           <p>
             Уже есть аккаунт? <Link to="/login">Войти</Link>
