@@ -5,8 +5,8 @@ import Login from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
 import BooksPage from "./BooksPage";
 import MyBooksPage from "./pages/MyBooksPage";
+import { AuthProvider } from "./AuthContext";
 import "./App.css";
-
 
 function App() {
   return (
@@ -21,7 +21,6 @@ function App() {
           <Route path="/register" element={<Register />} />
 
           <Route path="/mybooks" element={<MyBooksPage />} />
-
         </Routes>
       </div>
     </Router>

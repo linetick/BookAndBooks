@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
 import "./LoginPage.css";
 import "../App.css";
 
 const LoginPage = () => {
-  const [login, setLogin] = useState("");
+  const { login } = useContext(AuthContext);
+  const [loginInput, setLoginInput] = useState("");
   const [password, setPassword] = useState("");
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -33,11 +35,11 @@ const LoginPage = () => {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ login, password }),
+        body: JSON.stringify({ loginInput, password }),
       });
       if (response.ok) {
         localStorage.setItem("isAuthenticated", "true");
-        navigate("/");
+        navigate("/", { state: { justLoggedIn: true } });
       } else {
         alert("Неверный логин или пароль");
       }
@@ -75,8 +77,8 @@ const LoginPage = () => {
             <input
               type="text"
               id="login"
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
+              value={loginInput}
+              onChange={(e) => setLoginInput(e.target.value)}
               required
               placeholder=" "
             />

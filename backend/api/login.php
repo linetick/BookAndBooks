@@ -38,6 +38,7 @@ if (empty($data['password']) || strlen($data['password']) < 8) {
 
 if (!empty($errors)) {
     http_response_code(422); // Unprocessable Entity
+    header('Content-Type: application/json');
     echo json_encode(['errors' => $errors]);
     exit;
 }
