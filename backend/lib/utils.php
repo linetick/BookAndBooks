@@ -1,4 +1,6 @@
 <?php
+
+require __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -36,9 +38,16 @@ function log_login_attempt($login_or_email, $success) {
 }
 
 function send_activation_email($toEmail, $activationToken) {
+   error_log("Вызов send_activation_email для {$toEmail} с токеном {$activationToken}"); // <-- добавь
+   
     $mail = new PHPMailer(true);
 
     try {
+        $mail->SMTPDebug = 2;
+$mail->Debugoutput = function($str, $level) {
+    error_log("SMTP Debug: $str");
+};
+
         $mail->isSMTP();
         $mail->Host = 'smtp.yandex.ru';
         $mail->SMTPAuth = true;
@@ -46,7 +55,6 @@ function send_activation_email($toEmail, $activationToken) {
         $mail->Password = 'fyflzdeuesdryssr'; // пароль приложения
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
-
         $mail->setFrom('mikhailova121327@yandex.ru', 'BookNbook');
 
         $mail->addAddress($toEmail);
