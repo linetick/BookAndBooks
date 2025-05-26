@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "./MyBooksPage.css";
+import { Modal, ThemeToggle, ProfileButton } from "../components";
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -9,7 +10,6 @@ const BooksPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [theme, setTheme] = useState("light");
   const [coverFile, setCoverFile] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Временное состояние для демонстрации
   const [showAddBookForm, setShowAddBookForm] = useState(false); // Состояние для отображения формы добавления книги
@@ -20,15 +20,6 @@ const BooksPage = () => {
     cover_path: "",
   });
   const navigate = useNavigate();
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => {
-      const themes = ["light", "dark", "nature", "ocean"];
-      const currentIndex = themes.indexOf(prevTheme);
-      const nextIndex = (currentIndex + 1) % themes.length;
-      return themes[nextIndex];
-    });
-  };
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -127,23 +118,11 @@ const BooksPage = () => {
           BookAndBooks
         </Link>
         <div className="header-buttons">
-          <button
-            className="profile-button"
-            onClick={() => navigate("/profile")}
-          >
-            👤
-          </button>
+          <ProfileButton />
         </div>
       </header>
 
-      <div className="theme-switcher">
-        <button onClick={toggleTheme} className="theme-button">
-          {theme === "light" && "🌞"}
-          {theme === "dark" && "🌙"}
-          {theme === "nature" && "🌿"}
-          {theme === "ocean" && "🌊"}
-        </button>
-      </div>
+      <ThemeToggle />
 
       <h1>Библиотека</h1>
       {/* <div className="books-actions">
@@ -176,57 +155,53 @@ const BooksPage = () => {
         </div>
       </div>
 
-      {selectedBook && (
-        <div className="book-reader-modal">
-          <div className="book-reader-content">
-            <button className="close-button" onClick={handleCloseReader}>
-              ×
-            </button>
-            <h2>{selectedBook.title}</h2>
-            <p className="book-author">Автор: {selectedBook.author}</p>
-            <div className="book-text">
-              {/* Отображение текста страницы книги */}
-            </div>
+      <Modal isOpen={!!selectedBook} onClose={handleCloseReader}>
+        <div className="book-reader-content">
+          <button className="close-button" onClick={handleCloseReader}>
+            ×
+          </button>
+          <h2>{selectedBook.title}</h2>
+          <p className="book-author">Автор: {selectedBook.author}</p>
+          <div className="book-text">
+            {/* Отображение текста страницы книги */}
           </div>
         </div>
-      )}
+      </Modal>
 
-      {showAddBookForm && (
-        <div className="book-reader-modal">
-          <div className="book-reader-content">
-            <button
-              className="close-button"
-              onClick={() => setShowAddBookForm(false)}
-            >
-              ×
-            </button>
+      <Modal isOpen={showAddBookForm} onClose={() => setShowAddBookForm(false)}>
+        <div className="book-reader-content">
+          <button
+            className="close-button"
+            onClick={() => setShowAddBookForm(false)}
+          >
+            ×
+          </button>
 
-            <form onSubmit={handleAddBookSubmit} className="add-book-form">
-              <h2>Добавить книгу</h2>
-              <input
-                type="text"
-                name="title"
-                placeholder="Название книги"
-                value={newBook.title}
-                onChange={handleInputChange}
-              />
-              <textarea
-                name="description"
-                placeholder="Описание"
-                value={newBook.description}
-                onChange={handleInputChange}
-              />
-              <input
-                type="file"
-                name="cover"
-                accept="image/png, image/jpeg"
-                onChange={(e) => setCoverFile(e.target.files[0])}
-              />
-              <button type="submit">Добавить книгу</button>
-            </form>
-          </div>
+          <form onSubmit={handleAddBookSubmit} className="add-book-form">
+            <h2>Добавить книгу</h2>
+            <input
+              type="text"
+              name="title"
+              placeholder="Название книги"
+              value={newBook.title}
+              onChange={handleInputChange}
+            />
+            <textarea
+              name="description"
+              placeholder="Описание"
+              value={newBook.description}
+              onChange={handleInputChange}
+            />
+            <input
+              type="file"
+              name="cover"
+              accept="image/png, image/jpeg"
+              onChange={(e) => setCoverFile(e.target.files[0])}
+            />
+            <button type="submit">Добавить книгу</button>
+          </form>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };

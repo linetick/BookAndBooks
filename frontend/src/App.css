@@ -95,7 +95,11 @@ body {
   font-weight: 600;
   text-decoration: none;
   margin-right: auto;
-  }
+}
+
+.logo:hover {
+  color: var(--accent-color);
+}
 
 .header-buttons {
   display: flex;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
 import "../App.css";
+import { ThemeToggle } from "../components";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
@@ -9,25 +10,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [formErrors, setFormErrors] = useState({});
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    return savedTheme || "light";
-  });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    document.body.setAttribute("data-theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    const themes = ["light", "dark", "nature", "ocean"];
-    const currentIndex = themes.indexOf(theme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    const newTheme = themes[nextIndex];
-    setTheme(newTheme);
-    document.body.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,18 +45,7 @@ const RegisterPage = () => {
           BookAndBooks
         </Link>
         <div className="header-buttons">
-          <div className="theme-switcher">
-            <button
-              className="theme-button"
-              onClick={toggleTheme}
-              title="Сменить тему"
-            >
-              {theme === "light" && "🌞"}
-              {theme === "dark" && "🌙"}
-              {theme === "nature" && "🌿"}
-              {theme === "ocean" && "🌊"}
-            </button>
-          </div>
+          <ThemeToggle />
         </div>
       </header>
       <div className="auth-container">

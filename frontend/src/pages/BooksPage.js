@@ -3,9 +3,10 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import "./BooksPage.css";
 import "../App.css";
+import { ProfileButton, Modal } from "../components";
 
 const BooksPage = () => {
-  const { isAuthenticated } = useContext(AuthContext); // ✅ Хук внутри компонента
+  const { isAuthenticated } = useContext(AuthContext);
 
   const location = useLocation();
   const [books, setBooks] = useState([]);
@@ -13,25 +14,7 @@ const BooksPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    return savedTheme || "light";
-  });
-  //const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    document.body.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    const themes = ["light", "dark", "nature", "ocean"];
-    const currentIndex = themes.indexOf(theme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    const newTheme = themes[nextIndex];
-    setTheme(newTheme);
-  };
 
   useEffect(() => {
     // Тестовые данные книг и страниц
@@ -216,14 +199,6 @@ const BooksPage = () => {
     }
   };
 
-  const handleProfileClick = () => {
-    if (isAuthenticated) {
-      navigate("/profile");
-    } else {
-      navigate("/login");
-    }
-  };
-
   const handleMyBooksClick = () => {
     navigate("/my-books");
   };
@@ -242,30 +217,19 @@ const BooksPage = () => {
 
   return (
     <div className="books-page">
-      <header className="books-header">
+      {/* <header className="books-header">
         <Link to="/" className="logo">
           BookAndBooks
         </Link>
         <div className="header-buttons">
-          <button className="profile-button" onClick={handleProfileClick}>
-            👤
-          </button>
+          <ProfileButton />
           {isAuthenticated ? (
             <button onClick={handleMyBooksClick}>Мои книги</button>
           ) : (
             <button onClick={handleLoginClick}>Войти</button>
           )}
         </div>
-      </header>
-
-      <div className="theme-switcher">
-        <button onClick={toggleTheme} className="theme-button">
-          {theme === "light" && "🌞"}
-          {theme === "dark" && "🌙"}
-          {theme === "nature" && "🌿"}
-          {theme === "ocean" && "🌊"}
-        </button>
-      </div>
+      </header> */}
 
       <h1>Библиотека</h1>
       <div className="books-grid">
@@ -289,39 +253,34 @@ const BooksPage = () => {
         ))}
       </div>
 
-      {selectedBook && (
-        <div className="book-reader-modal">
-          <div className="book-reader-content">
-            <button className="close-button" onClick={handleCloseReader}>
-              ×
+      <Modal isOpen={!!selectedBook} onClose={handleCloseReader}>
+        <div className="book-reader-content">
+          <h2>{selectedBook?.title}</h2>
+          <p className="book-author">Автор: {selectedBook?.author}</p>
+          <div className="book-text">
+            {selectedBook?.pages[currentPage - 1]?.content}
+          </div>
+          <div className="page-navigation">
+            <button
+              className="page-button"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              Предыдущая страница
             </button>
-            <h2>{selectedBook.title}</h2>
-            <p className="book-author">Автор: {selectedBook.author}</p>
-            <div className="book-text">
-              {selectedBook.pages[currentPage - 1]?.content}
-            </div>
-            <div className="page-navigation">
-              <button
-                className="page-button"
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-              >
-                Предыдущая страница
-              </button>
-              <span className="page-number">
-                Страница {currentPage} из {selectedBook.pages.length}
-              </span>
-              <button
-                className="page-button"
-                onClick={handleNextPage}
-                disabled={currentPage === selectedBook.pages.length}
-              >
-                Следующая страница
-              </button>
-            </div>
+            <span className="page-number">
+              Страница {currentPage} из {selectedBook?.pages.length}
+            </span>
+            <button
+              className="page-button"
+              onClick={handleNextPage}
+              disabled={currentPage === selectedBook?.pages.length}
+            >
+              Следующая страница
+            </button>
           </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };
