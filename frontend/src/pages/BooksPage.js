@@ -38,7 +38,7 @@ const BooksPage = () => {
     const testBooks = [
       {
         id: 1,
-        title: "Тайны океана",
+        title: "Тайны океана 123",
         author: "Анна Морская",
         cover_path:
           "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=60",
@@ -187,7 +187,7 @@ const BooksPage = () => {
     setBooks(testBooks);
     setLoading(false);
     window.testPages = testPages;
-  }, []);
+  }, [location]);
 
   const fetchBookPages = async (bookId) => {
     return window.testPages[bookId] || [];
