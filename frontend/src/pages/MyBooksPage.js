@@ -1,106 +1,80 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./MyBooksPage.css";
 import { Modal, ThemeToggle, ProfileButton } from "../components";
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [coverFile, setCoverFile] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Временное состояние для демонстрации
-  const [showAddBookForm, setShowAddBookForm] = useState(false); // Состояние для отображения формы добавления книги
+  const [showAddBookForm, setShowAddBookForm] = useState(false);
   const [newBook, setNewBook] = useState({
     title: "",
-    author: "",
     description: "",
-    cover_path: "",
   });
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await axios.get("http://localhost/api/my_books.php", {
-          withCredentials: true,
-        });
-        setBooks(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Не удалось загрузить книги. Возможно, вы не авторизованы.");
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
 
   const fetchBooks = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      // В реальном приложении здесь будет запрос к API
-      // const response = await axios.get('http://localhost:3001/api/books');
-      // setBooks(response.data);
-      setLoading(false);
+      const response = await axios.get("http://localhost/api/my_books.php", {
+        withCredentials: true,
+      });
+      setBooks(response.data);
     } catch (err) {
-      setError("Failed to fetch books");
+      setError("Не удалось загрузить книги. Возможно, вы не авторизованы.");
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleBookClick = async (book) => {
-    // Логика для открытия книги
-    setSelectedBook(book);
-    setCurrentPage(1);
-  };
+  useEffect(() => {
+    fetchBooks();
+  }, []);
 
-  const handleBookClick2 = async (book) => {
-    // Логика для открытия книги
-    //setSelectedBook(book);
-    //setCurrentPage(1);
+  const handleBookClick = (book) => {
+    setSelectedBook(book);
   };
 
   const handleCloseReader = () => {
     setSelectedBook(null);
-    setCurrentPage(1);
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < selectedBook.pages.length) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
   };
 
   const handleAddBookClick = () => {
-    setShowAddBookForm(true); // Показать форму добавления книги
+    setSelectedBook(null);
+    setShowAddBookForm(true);
   };
 
   const handleAddBookSubmit = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("title", newBook.title);
     formData.append("description", newBook.description);
-    formData.append("cover", coverFile); // Файл
+    if (coverFile) {
+      formData.append("cover", coverFile);
+    }
 
-    await axios.post("http://localhost/api/book_create.php", formData, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    try {
+      await axios.post("http://localhost/api/book_create.php", formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setShowAddBookForm(false);
+      setNewBook({ title: "", description: "" });
+      setCoverFile(null);
+      await fetchBooks(); // обновляем книги после добавления
+    } catch (error) {
+      alert("Ошибка при добавлении книги");
+    }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewBook((prevBook) => ({ ...prevBook, [name]: value }));
+    setNewBook((prev) => ({ ...prev, [name]: value }));
   };
 
   if (loading) {
@@ -125,11 +99,6 @@ const BooksPage = () => {
       <ThemeToggle />
 
       <h1>Библиотека</h1>
-      {/* <div className="books-actions">
-        <button className="add-book-button" onClick={handleAddBookClick}>
-          + Добавить книгу
-        </button>
-      </div> */}
 
       <div className="books-grid">
         {books.map((book) => (
@@ -155,52 +124,49 @@ const BooksPage = () => {
         </div>
       </div>
 
-      <Modal isOpen={!!selectedBook} onClose={handleCloseReader}>
-        <div className="book-reader-content">
-          <button className="close-button" onClick={handleCloseReader}>
-            ×
-          </button>
-          <h2>{selectedBook.title}</h2>
-          <p className="book-author">Автор: {selectedBook.author}</p>
-          <div className="book-text">
-            {/* Отображение текста страницы книги */}
-          </div>
-        </div>
+      <Modal
+        isOpen={!!selectedBook}
+        onClose={handleCloseReader}
+        className="modal-reader"
+      >
+        {selectedBook && (
+          <>
+            <h2>{selectedBook.title}</h2>
+            <p className="book-author">Автор: {selectedBook.author}</p>
+            <div className="book-text">{/* Текст книги */}</div>
+          </>
+        )}
       </Modal>
 
-      <Modal isOpen={showAddBookForm} onClose={() => setShowAddBookForm(false)}>
-        <div className="book-reader-content">
-          <button
-            className="close-button"
-            onClick={() => setShowAddBookForm(false)}
-          >
-            ×
-          </button>
-
-          <form onSubmit={handleAddBookSubmit} className="add-book-form">
-            <h2>Добавить книгу</h2>
-            <input
-              type="text"
-              name="title"
-              placeholder="Название книги"
-              value={newBook.title}
-              onChange={handleInputChange}
-            />
-            <textarea
-              name="description"
-              placeholder="Описание"
-              value={newBook.description}
-              onChange={handleInputChange}
-            />
-            <input
-              type="file"
-              name="cover"
-              accept="image/png, image/jpeg"
-              onChange={(e) => setCoverFile(e.target.files[0])}
-            />
-            <button type="submit">Добавить книгу</button>
-          </form>
-        </div>
+      <Modal
+        isOpen={showAddBookForm}
+        onClose={() => setShowAddBookForm(false)}
+        className="modal-add-book"
+      >
+        <form onSubmit={handleAddBookSubmit} className="add-book-form">
+          <h2>Добавить книгу</h2>
+          <input
+            type="text"
+            name="title"
+            placeholder="Название книги"
+            value={newBook.title}
+            onChange={handleInputChange}
+            required
+          />
+          <textarea
+            name="description"
+            placeholder="Описание"
+            value={newBook.description}
+            onChange={handleInputChange}
+          />
+          <input
+            type="file"
+            name="cover"
+            accept="image/png, image/jpeg"
+            onChange={(e) => setCoverFile(e.target.files[0])}
+          />
+          <button type="submit">Добавить книгу</button>
+        </form>
       </Modal>
     </div>
   );

@@ -533,3 +533,11 @@
   font-size: 3rem;
   cursor: pointer;
 }
+
+.modal-reader {
+  z-index: 1000;
+}
+
+.modal-add-book {
+  z-index: 1100;
+}
