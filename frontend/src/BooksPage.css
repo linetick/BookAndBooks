@@ -1,5 +1,5 @@
 /* Theme Switcher */
-.theme-switcher {
+/* .theme-switcher {
   position: fixed;
   top: 10px;
   right: 10px;
@@ -27,7 +27,7 @@
   transform: scale(1.1);
   background: var(--accent-color);
   color: white;
-}
+} */
 
 /* Light Theme (Default) */
 .theme-light {
@@ -99,11 +99,6 @@
   margin: 0;
   min-height: 100vh;
   background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   overflow-y: auto;
   padding-top: 5rem;
 }
@@ -338,7 +333,7 @@
 }
 
 /* Header Styles */
-.books-header {
+/* .books-header {
   position: fixed;
   top: 0;
   left: 0;
@@ -409,4 +404,4 @@
   background: var(--button-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--card-shadow);
-} 
+} */ 

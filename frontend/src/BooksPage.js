@@ -9,22 +9,24 @@ const BooksPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(() => {
+    // Read theme from body attribute or localStorage
+    return document.body.getAttribute('data-theme') || localStorage.getItem('theme') || 'light';
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Временное состояние для демонстрации
   const navigate = useNavigate();
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => {
-      const themes = ["light", "dark", "nature", "ocean"];
-      const currentIndex = themes.indexOf(prevTheme);
-      const nextIndex = (currentIndex + 1) % themes.length;
-      return themes[nextIndex];
-    });
-  };
-
+  // Listen for theme changes (from menu or elsewhere)
   useEffect(() => {
-    document.body.className = `theme-${theme}`;
-  }, [theme]);
+    const observer = new MutationObserver(() => {
+      const newTheme = document.body.getAttribute('data-theme') || 'light';
+      setTheme(newTheme);
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+    // Set initial theme
+    setTheme(document.body.getAttribute('data-theme') || localStorage.getItem('theme') || 'light');
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     // Временные тестовые данные
@@ -263,35 +265,9 @@ const BooksPage = () => {
 
   return (
     <div className="books-page">
-      <header className="books-header">
-        <Link to="/" className="logo">
-          BookAndBooks
-        </Link>
-        <div className="header-buttons">
-          <button className="profile-button" onClick={handleProfileClick}>
-            👤
-          </button>
-          {isAuthenticated ? (
-            <button className="nav-button" onClick={handleMyBooksClick}>
-              Мои книги
-            </button>
-          ) : (
-            <button className="nav-button" onClick={handleLoginClick}>
-              Войти
-            </button>
-          )}
-        </div>
+      <header className="header">
+        <Link to="/" className="logo">BookAndBooks</Link>
       </header>
-
-      <div className="theme-switcher">
-        <button onClick={toggleTheme} className="theme-button">
-          {theme === "light" && "🌞"}
-          {theme === "dark" && "🌙"}
-          {theme === "nature" && "🌿"}
-          {theme === "ocean" && "🌊"}
-        </button>
-      </div>
-
       <h1>Библиотека</h1>
       <div className="books-grid">
         {books.map((book) => (

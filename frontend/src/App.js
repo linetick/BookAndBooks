@@ -7,20 +7,22 @@ import BooksPage from "./BooksPage";
 import MyBooksPage from "./pages/MyBooksPage";
 import { AuthProvider } from "./AuthContext";
 import "./App.css";
+import Layout from "./components/Layout";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 function App() {
   return (
     <Router>
       <div className="App">
-        {/* Removed old navigation */}
-
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/books" element={<BooksPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-
-          <Route path="/mybooks" element={<MyBooksPage />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="books" element={<BooksPage />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="mybooks" element={<MyBooksPage />} />
+          </Route>
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         </Routes>
       </div>
     </Router>
