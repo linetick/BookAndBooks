@@ -157,10 +157,10 @@ const BooksPage = () => {
               <p className="book-author">Автор: {book.author}</p>
               <p className="book-description">{book.description}</p>
               <div style={{display:'flex', gap:8, marginTop:12}}>
-                <button className="edit-book-btn" onClick={() => handleEditBookClick(book)} type="button" title="Редактировать">
+                <button className="edit-book-btn" onClick={() => {console.log('edit click'); handleEditBookClick(book);}} type="button" title="Редактировать" aria-label="Редактировать книгу">
                   <FaPen />
                 </button>
-                <button className="delete-book-btn" onClick={() => handleDeleteBook(book.id)} type="button" title="Удалить">
+                <button className="delete-book-btn" onClick={() => {console.log('delete click'); handleDeleteBook(book.id);}} type="button" title="Удалить" aria-label="Удалить книгу">
                   <FaTrash />
                 </button>
               </div>
