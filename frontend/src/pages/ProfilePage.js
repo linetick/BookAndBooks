@@ -1,22 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import ThemeToggle from '../components/ThemeToggle';
-import '../styles/ProfilePage.css';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import ThemeToggle from "../components/ThemeToggle";
+import "../styles/ProfilePage.css";
+import axios from "axios";
 
 const LogoutButton = ({ onLogout }) => {
   const navigate = useNavigate();
   const handleLogout = () => {
     onLogout();
-    navigate('/');
+    navigate("/");
   };
   return (
     <button className="logout-avatar-btn" title="Выйти" onClick={handleLogout}>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{stroke: 'var(--text-primary)'}} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-        <polyline points="16 17 21 12 16 7"/>
-        <line x1="21" y1="12" x2="9" y2="12"/>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        style={{ stroke: "var(--text-primary)" }}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        <polyline points="16 17 21 12 16 7" />
+        <line x1="21" y1="12" x2="9" y2="12" />
       </svg>
     </button>
   );
@@ -31,13 +40,13 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/');
+      navigate("/");
       return;
     }
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     if (userData) {
       const parsed = JSON.parse(userData);
-      if (parsed.id === 'test_user_id') {
+      if (parsed.id === "test_user_id") {
         setUser(parsed);
         setLoading(false);
         return;
@@ -48,12 +57,12 @@ const ProfilePage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get('http://localhost/api/profile.php', {
+        const response = await axios.get("http://localhost/api/profile.php", {
           withCredentials: true,
         });
         setUser(response.data);
       } catch (err) {
-        setError('Не удалось загрузить профиль. Возможно, вы не авторизованы.');
+        setError("Не удалось загрузить профиль. Возможно, вы не авторизованы.");
         setUser(null);
       } finally {
         setLoading(false);
@@ -69,7 +78,9 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <header className="header">
-        <Link to="/" className="logo">BookAndBooks</Link>
+        <Link to="/" className="logo">
+          BookAndBooks
+        </Link>
         <ThemeToggle />
       </header>
       <div className="profile-container">
@@ -80,7 +91,7 @@ const ProfilePage = () => {
           {loading ? (
             <div>Загрузка...</div>
           ) : error ? (
-            <div style={{color: 'red'}}>{error}</div>
+            <div style={{ color: "red" }}>{error}</div>
           ) : (
             <>
               <div className="profile-info">
@@ -88,8 +99,10 @@ const ProfilePage = () => {
                   <span>👤</span>
                 </div>
                 <div className="profile-details">
-                  <h2>{user?.login || 'Пользователь'}</h2>
-                  <p className="profile-email">{user?.email || 'Email не указан'}</p>
+                  <h2>{user?.login || "Пользователь"}</h2>
+                  <p className="profile-email">
+                    {user?.email || "Email не указан"}
+                  </p>
                 </div>
                 <LogoutButton onLogout={logout} />
               </div>

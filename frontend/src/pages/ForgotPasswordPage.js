@@ -21,7 +21,7 @@ const ForgotPasswordPage = () => {
     setSuccess("");
     setLoading(true);
     try {
-      const res = await fetch("/api/forgot_password.php", {
+      const res = await fetch("http://localhost/api/requestPassword.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -54,7 +54,7 @@ const ForgotPasswordPage = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/reset_password.php", {
+      const res = await fetch("http://localhost/api/resetPassword.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code, password }),
