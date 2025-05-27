@@ -91,9 +91,6 @@ const BooksPage = () => {
         <Link to="/" className="logo">
           BookAndBooks
         </Link>
-        <div className="header-buttons">
-          <ProfileButton />
-        </div>
       </header>
 
       <ThemeToggle />
