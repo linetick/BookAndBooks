@@ -18,6 +18,12 @@ const BooksPage = () => {
   });
   const [editBookId, setEditBookId] = useState(null);
   const [showEditBookForm, setShowEditBookForm] = useState(false);
+  const [deleteBookId, setDeleteBookId] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteBookTitle, setDeleteBookTitle] = useState("");
+  const [showTextEditor, setShowTextEditor] = useState(false);
+  const [textEditBook, setTextEditBook] = useState(null);
+  const [bookText, setBookText] = useState("");
 
   const fetchBooks = async () => {
     setLoading(true);
@@ -39,7 +45,9 @@ const BooksPage = () => {
   }, []);
 
   const handleBookClick = (book) => {
-    setSelectedBook(book);
+    setTextEditBook(book);
+    setBookText(book.pages && book.pages.length > 0 ? book.pages.map(p => p.content).join("\n\n") : "");
+    setShowTextEditor(true);
   };
 
   const handleCloseReader = () => {
@@ -80,14 +88,28 @@ const BooksPage = () => {
     setNewBook((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDeleteBook = async (bookId) => {
-    if (!window.confirm('Вы уверены, что хотите удалить эту книгу?')) return;
+  const handleDeleteBook = (book) => {
+    setDeleteBookId(book.id);
+    setDeleteBookTitle(book.title);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteBook = async () => {
     try {
-      await axios.post('http://localhost/api/book_delete.php', { id: bookId }, { withCredentials: true });
+      await axios.post('http://localhost/api/book_delete.php', { id: deleteBookId }, { withCredentials: true });
+      setShowDeleteConfirm(false);
+      setDeleteBookId(null);
+      setDeleteBookTitle("");
       await fetchBooks();
     } catch (err) {
       alert('Ошибка при удалении книги');
     }
+  };
+
+  const cancelDeleteBook = () => {
+    setShowDeleteConfirm(false);
+    setDeleteBookId(null);
+    setDeleteBookTitle("");
   };
 
   const handleEditBookClick = (book) => {
@@ -121,6 +143,27 @@ const BooksPage = () => {
     }
   };
 
+  const handleSaveBookText = async () => {
+    try {
+      await axios.post('http://localhost/api/book_text_edit.php', {
+        id: textEditBook.id,
+        text: bookText
+      }, { withCredentials: true });
+      setShowTextEditor(false);
+      setTextEditBook(null);
+      setBookText("");
+      await fetchBooks();
+    } catch (err) {
+      alert('Ошибка при сохранении текста книги');
+    }
+  };
+
+  const handleCloseTextEditor = () => {
+    setShowTextEditor(false);
+    setTextEditBook(null);
+    setBookText("");
+  };
+
   if (loading) {
     return <div className="books-page">Loading...</div>;
   }
@@ -146,6 +189,7 @@ const BooksPage = () => {
           <div
             key={book.id}
             className="book-card"
+            onClick={() => handleBookClick(book)}
           >
             <img
               src={`http://localhost/${book.cover_path}`}
@@ -162,7 +206,7 @@ const BooksPage = () => {
                 <button className="edit-book-btn" onClick={e => {e.stopPropagation(); console.log('edit click'); handleEditBookClick(book);}} type="button" title="Редактировать" aria-label="Редактировать книгу">
                   <FaPen />
                 </button>
-                <button className="delete-book-btn" onClick={e => {e.stopPropagation(); console.log('delete click'); handleDeleteBook(book.id);}} type="button" title="Удалить" aria-label="Удалить книгу">
+                <button className="delete-book-btn" onClick={e => {e.stopPropagation(); handleDeleteBook(book);}} type="button" title="Удалить" aria-label="Удалить книгу">
                   <FaTrash />
                 </button>
               </div>
@@ -193,6 +237,22 @@ const BooksPage = () => {
         onClose={() => setShowAddBookForm(false)}
         className="modal-add-book"
       >
+        {coverFile && (
+          <div style={{textAlign: 'center', marginBottom: 24}}>
+            <img
+              src={URL.createObjectURL(coverFile)}
+              alt="Обложка"
+              style={{
+                maxWidth: 180,
+                maxHeight: 240,
+                borderRadius: 12,
+                boxShadow: '0 4px 16px #0001',
+                objectFit: 'cover',
+                margin: '0 auto'
+              }}
+            />
+          </div>
+        )}
         <form onSubmit={handleAddBookSubmit} className="add-book-form">
           <h2>Добавить книгу</h2>
           <input
@@ -224,6 +284,22 @@ const BooksPage = () => {
         onClose={() => setShowEditBookForm(false)}
         className="modal-add-book"
       >
+        {(coverFile || (selectedBook && selectedBook.cover_path)) && (
+          <div style={{textAlign: 'center', marginBottom: 24}}>
+            <img
+              src={coverFile ? URL.createObjectURL(coverFile) : `http://localhost/${selectedBook.cover_path}`}
+              alt="Обложка"
+              style={{
+                maxWidth: 180,
+                maxHeight: 240,
+                borderRadius: 12,
+                boxShadow: '0 4px 16px #0001',
+                objectFit: 'cover',
+                margin: '0 auto'
+              }}
+            />
+          </div>
+        )}
         <form onSubmit={handleEditBookSubmit} className="add-book-form">
           <h2>Редактировать книгу</h2>
           <input
@@ -248,6 +324,41 @@ const BooksPage = () => {
           />
           <button type="submit">Сохранить изменения</button>
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={showDeleteConfirm}
+        onClose={cancelDeleteBook}
+        className="modal-add-book"
+      >
+        <div className="add-book-form" style={{textAlign:'center', maxWidth: 340}}>
+          <h2 style={{color:'#e74c3c'}}>Удалить книгу?</h2>
+          <p style={{marginBottom: 24}}>Вы действительно хотите удалить книгу <b>"{deleteBookTitle}"</b>? Это действие нельзя отменить.</p>
+          <div style={{display:'flex', gap:16, justifyContent:'center'}}>
+            <button onClick={confirmDeleteBook} style={{background:'#e74c3c', color:'#fff', border:'none', borderRadius:8, padding:'0.7rem 2.2rem', fontWeight:600, fontSize:'1.1rem', cursor:'pointer'}}>Удалить</button>
+            <button onClick={cancelDeleteBook} style={{background:'#f6faff', color:'#222', border:'1.5px solid #dbeafe', borderRadius:8, padding:'0.7rem 2.2rem', fontWeight:500, fontSize:'1.1rem', cursor:'pointer'}}>Отмена</button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={showTextEditor}
+        onClose={handleCloseTextEditor}
+        className="modal-add-book"
+      >
+        <div className="add-book-form" style={{maxWidth: 540}}>
+          <h2>Текст книги</h2>
+          <textarea
+            style={{minHeight: 220, fontSize: '1.1rem'}}
+            value={bookText}
+            onChange={e => setBookText(e.target.value)}
+            placeholder="Введите или измените текст книги..."
+          />
+          <div style={{display:'flex', gap:16, justifyContent:'center', marginTop: 18}}>
+            <button onClick={handleSaveBookText} style={{background:'var(--accent-color, #3498db)', color:'#fff', border:'none', borderRadius:8, padding:'0.7rem 2.2rem', fontWeight:600, fontSize:'1.1rem', cursor:'pointer'}}>Сохранить</button>
+            <button onClick={handleCloseTextEditor} style={{background:'#f6faff', color:'#222', border:'1.5px solid #dbeafe', borderRadius:8, padding:'0.7rem 2.2rem', fontWeight:500, fontSize:'1.1rem', cursor:'pointer'}}>Отмена</button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
