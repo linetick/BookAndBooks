@@ -1,56 +1,61 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./MyBooksPage.css";
 import { Modal, ThemeToggle, ProfileButton } from "../components";
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [coverFile, setCoverFile] = useState(null);
   const [showAddBookForm, setShowAddBookForm] = useState(false);
   const [newBook, setNewBook] = useState({
     title: "",
+    author: "", // Обрати внимание, у тебя автор сейчас не заполняется в форме, можно добавить, если нужно
     description: "",
+    cover_path: "",
   });
-
-  const fetchBooks = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get("http://localhost/api/my_books.php", {
-        withCredentials: true,
-      });
-      setBooks(response.data);
-    } catch (err) {
-      setError("Не удалось загрузить книги. Возможно, вы не авторизованы.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get("http://localhost/api/my_books.php", {
+          withCredentials: true,
+        });
+        setBooks(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Не удалось загрузить книги. Возможно, вы не авторизованы.");
+        setLoading(false);
+      }
+    };
+
     fetchBooks();
   }, []);
 
+  // Удали эту пустую функцию fetchBooks — она не нужна и перекрывает useEffect
+
   const handleBookClick = (book) => {
     setSelectedBook(book);
+    setCurrentPage(1);
   };
 
   const handleCloseReader = () => {
     setSelectedBook(null);
+    setCurrentPage(1);
   };
 
   const handleAddBookClick = () => {
-    setSelectedBook(null);
+    setSelectedBook(null); // Закрыть открытую книгу перед показом формы добавления
     setShowAddBookForm(true);
   };
 
   const handleAddBookSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("title", newBook.title);
     formData.append("description", newBook.description);
@@ -64,9 +69,13 @@ const BooksPage = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setShowAddBookForm(false);
-      setNewBook({ title: "", description: "" });
+      setNewBook({ title: "", author: "", description: "", cover_path: "" });
       setCoverFile(null);
-      await fetchBooks(); // обновляем книги после добавления
+      // После успешного добавления книги обновим список
+      const response = await axios.get("http://localhost/api/my_books.php", {
+        withCredentials: true,
+      });
+      setBooks(response.data);
     } catch (error) {
       alert("Ошибка при добавлении книги");
     }
@@ -74,7 +83,7 @@ const BooksPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewBook((prev) => ({ ...prev, [name]: value }));
+    setNewBook((prevBook) => ({ ...prevBook, [name]: value }));
   };
 
   if (loading) {
@@ -98,7 +107,7 @@ const BooksPage = () => {
 
       <ThemeToggle />
 
-      <h1>Моя библиотека</h1>
+      <h1>Библиотека</h1>
 
       <div className="books-grid">
         {books.map((book) => (
@@ -124,6 +133,7 @@ const BooksPage = () => {
         </div>
       </div>
 
+      {/* Модалка для чтения книги - кнопка закрытия есть внутри Modal */}
       <Modal
         isOpen={!!selectedBook}
         onClose={handleCloseReader}
@@ -133,11 +143,14 @@ const BooksPage = () => {
           <>
             <h2>{selectedBook.title}</h2>
             <p className="book-author">Автор: {selectedBook.author}</p>
-            <div className="book-text">{/* Текст книги */}</div>
+            <div className="book-text">
+              {/* Здесь можно добавить текст страницы книги */}
+            </div>
           </>
         )}
       </Modal>
 
+      {/* Модалка для добавления книги - кнопка закрытия есть внутри Modal */}
       <Modal
         isOpen={showAddBookForm}
         onClose={() => setShowAddBookForm(false)}
