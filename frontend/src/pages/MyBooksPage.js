@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "./MyBooksPage.css";
+import "../styles/MyBooksPage.css";
 import { Modal, ThemeToggle, ProfileButton } from "../components";
 
 const BooksPage = () => {
