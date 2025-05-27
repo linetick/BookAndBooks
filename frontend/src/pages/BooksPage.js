@@ -89,14 +89,17 @@ const BooksPage = () => {
         <Link to="/" className="logo">
           BookAndBooks
         </Link>
-        <input
-          type="text"
-          className="book-search-input"
-          placeholder="Поиск по названию или автору..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          style={{maxWidth: 320, padding: '0.5rem 1rem', borderRadius: 8, border: '1px solid var(--input-border)', fontSize: 16}}
-        />
+        <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+          <span style={{fontWeight: 500, fontSize: 16}}>Найти книгу</span>
+          <input
+            type="text"
+            className="book-search-input"
+            placeholder="Поиск"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            style={{maxWidth: 320, padding: '0.5rem 1rem', borderRadius: 8, border: '1px solid var(--input-border)', fontSize: 16}}
+          />
+        </div>
       </header>
 
       <h1>Библиотека</h1>

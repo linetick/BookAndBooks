@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "../styles/MyBooksPage.css";
 import { Modal, ThemeToggle, ProfileButton } from "../components";
+import { FaTrash, FaPen } from 'react-icons/fa';
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -15,6 +16,8 @@ const BooksPage = () => {
     title: "",
     description: "",
   });
+  const [editBookId, setEditBookId] = useState(null);
+  const [showEditBookForm, setShowEditBookForm] = useState(false);
 
   const fetchBooks = async () => {
     setLoading(true);
@@ -77,6 +80,47 @@ const BooksPage = () => {
     setNewBook((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleDeleteBook = async (bookId) => {
+    if (!window.confirm('Вы уверены, что хотите удалить эту книгу?')) return;
+    try {
+      await axios.post('http://localhost/api/book_delete.php', { id: bookId }, { withCredentials: true });
+      await fetchBooks();
+    } catch (err) {
+      alert('Ошибка при удалении книги');
+    }
+  };
+
+  const handleEditBookClick = (book) => {
+    setEditBookId(book.id);
+    setNewBook({ title: book.title, description: book.description });
+    setShowEditBookForm(true);
+    setCoverFile(null);
+  };
+
+  const handleEditBookSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('id', editBookId);
+    formData.append('title', newBook.title);
+    formData.append('description', newBook.description);
+    if (coverFile) {
+      formData.append('cover', coverFile);
+    }
+    try {
+      await axios.post('http://localhost/api/book_edit.php', formData, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setShowEditBookForm(false);
+      setEditBookId(null);
+      setNewBook({ title: '', description: '' });
+      setCoverFile(null);
+      await fetchBooks();
+    } catch (err) {
+      alert('Ошибка при редактировании книги');
+    }
+  };
+
   if (loading) {
     return <div className="books-page">Loading...</div>;
   }
@@ -102,7 +146,6 @@ const BooksPage = () => {
           <div
             key={book.id}
             className="book-card"
-            onClick={() => handleBookClick(book)}
           >
             <img
               src={`http://localhost/${book.cover_path}`}
@@ -113,6 +156,14 @@ const BooksPage = () => {
               <h2 className="book-title">{book.title}</h2>
               <p className="book-author">Автор: {book.author}</p>
               <p className="book-description">{book.description}</p>
+              <div style={{display:'flex', gap:8, marginTop:12}}>
+                <button className="edit-book-btn" onClick={() => handleEditBookClick(book)} type="button" title="Редактировать">
+                  <FaPen />
+                </button>
+                <button className="delete-book-btn" onClick={() => handleDeleteBook(book.id)} type="button" title="Удалить">
+                  <FaTrash />
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -163,6 +214,37 @@ const BooksPage = () => {
             onChange={(e) => setCoverFile(e.target.files[0])}
           />
           <button type="submit">Добавить книгу</button>
+        </form>
+      </Modal>
+
+      <Modal
+        isOpen={showEditBookForm}
+        onClose={() => setShowEditBookForm(false)}
+        className="modal-add-book"
+      >
+        <form onSubmit={handleEditBookSubmit} className="add-book-form">
+          <h2>Редактировать книгу</h2>
+          <input
+            type="text"
+            name="title"
+            placeholder="Название книги"
+            value={newBook.title}
+            onChange={handleInputChange}
+            required
+          />
+          <textarea
+            name="description"
+            placeholder="Описание"
+            value={newBook.description}
+            onChange={handleInputChange}
+          />
+          <input
+            type="file"
+            name="cover"
+            accept="image/png, image/jpeg"
+            onChange={(e) => setCoverFile(e.target.files[0])}
+          />
+          <button type="submit">Сохранить изменения</button>
         </form>
       </Modal>
     </div>
