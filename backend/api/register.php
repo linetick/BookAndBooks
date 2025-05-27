@@ -32,25 +32,25 @@ $login = trim($data['login'] ?? '');
 $email = trim($data['email'] ?? '');
 $password = $data['password'] ?? '';
 
-if (empty($login) || !preg_match('/^[a-zA-Z0-9_]{4,20}$/', $login)) {
-    $errors['login'] = 'Логин должен быть 4-20 символов (латиница, цифры, подчёркивание)';
-}
+// if (empty($login) || !preg_match('/^[a-zA-Z0-9_]{4,20}$/', $login)) {
+//     $errors['login'] = 'Логин должен быть 4-20 символов (латиница, цифры, подчёркивание)';
+// }
 
-if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors['email'] = 'Некорректный email';
-}
+// if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+//     $errors['email'] = 'Некорректный email';
+// }
 
-if (empty($password) || strlen($password) < 8) {
-    $errors['password'] = 'Пароль должен быть не менее 8 символов';
-} elseif (!preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
-    $errors['password'] = 'Пароль должен содержать цифры и заглавные буквы';
-}
+// if (empty($password) || strlen($password) < 8) {
+//     $errors['password'] = 'Пароль должен быть не менее 8 символов';
+// } elseif (!preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
+//     $errors['password'] = 'Пароль должен содержать цифры и заглавные буквы';
+// }
 
-if (!empty($errors)) {
-    http_response_code(422); // Unprocessable Entity
-    echo json_encode(['errors' => $errors]);
-    exit;
-}
+// if (!empty($errors)) {
+//     http_response_code(422); // Unprocessable Entity
+//     echo json_encode(['errors' => $errors]);
+//     exit;
+// }
 
 // 4. Проверка существования пользователя в транзакции
 $db = getDbConnection();
@@ -69,12 +69,22 @@ try {
 
     // 5. Создание пользователя с дополнительными полями
     $passwordHash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-    //$activationToken = bin2hex(random_bytes(32));
+    $activationToken = bin2hex(random_bytes(16));
+  $activationExpiresAt = date('Y-m-d H:i:s', strtotime('+1 day')); // токен действует 24 часа
+
     $stmt = $db->prepare(
-        "INSERT INTO users (login, email, password_hash, created_at) 
-         VALUES (?, ?, ?, NOW())"
-    );
-    $stmt->execute([$login, $email, $passwordHash]);
+    "INSERT INTO users (login, email, password_hash, activation_token, activation_expires_at, is_active, created_at) 
+     VALUES (?, ?, ?, ?, ?, 0, NOW())"
+);
+    $stmt->execute([
+    $login,
+    $email,
+    $passwordHash,
+    $activationToken,
+    $activationExpiresAt
+]);
+    send_activation_email($email, $activationToken);
+
     
     // 6. Отправка email для активации
     //send_activation_email($email, $activationToken);

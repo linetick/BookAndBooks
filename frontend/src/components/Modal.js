@@ -1,10 +1,8 @@
-import React from "react";
-
-const Modal = ({ isOpen, onClose, children }) => {
+const Modal = ({ isOpen, onClose, children, className = "" }) => {
   if (!isOpen) return null;
   return (
-    <div className="book-reader-modal" onClick={onClose}>
-      <div className="book-reader-content" onClick={e => e.stopPropagation()}>
+    <div className={`book-reader-modal ${className}`} onClick={onClose}>
+      <div className="book-reader-content" onClick={(e) => e.stopPropagation()}>
         <button className="close-button" onClick={onClose}>
           ×
         </button>
@@ -14,4 +12,4 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
-export default Modal; 
+export default Modal;

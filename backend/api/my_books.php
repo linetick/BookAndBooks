@@ -21,19 +21,22 @@ if (!isset($_SESSION['user_id'])) {
 try {
     $db = getDbConnection();
     $stmt = $db->prepare("
-        SELECT 
-            b.id AS book_id,
-            b.title,
-            b.description,
-            b.cover_path,
-            b.created_at,
-            p.page_number,
-            p.content AS page_content
-        FROM books b
-        LEFT JOIN pages p ON b.id = p.book_id
-        WHERE b.user_id = ?
-        ORDER BY b.id, p.page_number
-    ");
+    SELECT 
+        b.id AS book_id,
+        b.title,
+        b.description,
+        b.cover_path,
+        b.created_at,
+        p.page_number,
+        p.content AS page_content,
+        u.login AS author  -- добавляем login автора
+    FROM books b
+    LEFT JOIN pages p ON b.id = p.book_id
+    INNER JOIN users u ON b.user_id = u.id  -- связываем с пользователями
+    WHERE b.user_id = ?
+    ORDER BY b.id, p.page_number
+");
+
     $stmt->execute([$_SESSION['user_id']]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -42,13 +45,14 @@ try {
         $id = $row['book_id'];
         if (!isset($books[$id])) {
             $books[$id] = [
-                'id' => $id,
-                'title' => $row['title'],
-                'description' => $row['description'],
-                'cover_path' => $row['cover_path'],
-                'created_at' => $row['created_at'],
-                'pages' => []
-            ];
+        'id' => $id,
+        'title' => $row['title'],
+        'author' => $row['author'],  // добавляем автора сюда
+        'description' => $row['description'],
+        'cover_path' => $row['cover_path'],
+        'created_at' => $row['created_at'],
+        'pages' => []
+        ];
         }
 
         if ($row['page_number'] !== null) {
