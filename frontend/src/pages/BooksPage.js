@@ -10,6 +10,7 @@ const BooksPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -72,21 +73,36 @@ const BooksPage = () => {
     navigate("/my-books");
   };
 
+  // Фильтрация книг по названию и автору
+  const filteredBooks = books.filter(
+    (book) =>
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) return <div className="books-page">Загрузка...</div>;
   if (error) return <div className="books-page">{error}</div>;
 
   return (
     <div className="books-page">
-      <header className="header">
+      <header className="header" style={{gap: 16}}>
         <Link to="/" className="logo">
           BookAndBooks
         </Link>
+        <input
+          type="text"
+          className="book-search-input"
+          placeholder="Поиск по названию или автору..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          style={{maxWidth: 320, padding: '0.5rem 1rem', borderRadius: 8, border: '1px solid var(--input-border)', fontSize: 16}}
+        />
       </header>
 
       <h1>Библиотека</h1>
 
       <div className="books-grid">
-        {books.map((book) => (
+        {filteredBooks.map((book) => (
           <div
             key={book.id}
             className="book-card"
