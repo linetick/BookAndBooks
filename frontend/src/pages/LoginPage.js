@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import "../styles/LoginPage.css";
 import "../App.css";
-import { ThemeToggle, TestAccountLogin } from "../components";
+import { ThemeToggle } from "../components";
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
@@ -79,7 +79,6 @@ const LoginPage = () => {
             Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
           </p>
         </div>
-        <TestAccountLogin />
       </div>
     </div>
   );
