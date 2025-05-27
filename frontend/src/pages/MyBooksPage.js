@@ -372,6 +372,9 @@ const BooksPage = () => {
         closeOnOverlayClick={false}
       >
         <div className="add-book-form" style={{maxWidth: '90vw', width: '90vw', height: '90vh', minHeight: 500, position:'relative', display:'flex', flexDirection:'column', justifyContent:'flex-start', alignItems:'center', boxSizing:'border-box', padding:'2.5rem 2.5rem 2rem 2.5rem'}}>
+          <button className="close-button" onClick={handleCloseTextEditor} style={{position:'absolute', top:18, right:18, zIndex:10, width:40, height:40, borderRadius:'50%', background:'#f6faff', border:'1.5px solid #dbeafe', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, color:'#888', transition:'background 0.2s, color 0.2s'}}>
+            <FaTimes />
+          </button>
           <h2 style={{fontSize:'2.2rem', marginBottom: 24}}>Текст книги</h2>
           <div style={{width:'100%', flex:1, display:'flex', flexDirection:'column', alignItems:'center'}}>
             <textarea
