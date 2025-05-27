@@ -278,46 +278,63 @@ const BooksPage = () => {
         onClose={() => setShowAddBookForm(false)}
         className="modal-add-book"
       >
-        {coverFile && (
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <img
-              src={URL.createObjectURL(coverFile)}
-              alt="Обложка"
+        <div
+          className="book-reader-content"
+          style={
+            coverFile
+              ? {
+                  backgroundImage: `url(${URL.createObjectURL(coverFile)})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  position: "relative",
+                  minHeight: 400,
+                  borderRadius: 25,
+                }
+              : {}
+          }
+        >
+          {coverFile && (
+            <div
               style={{
-                maxWidth: 180,
-                maxHeight: 240,
-                borderRadius: 12,
-                boxShadow: "0 4px 16px #0001",
-                objectFit: "cover",
-                margin: "0 auto",
+                position: "absolute",
+                inset: 0,
+                background: "rgba(255,255,255,0.82)",
+                zIndex: 1,
+                borderRadius: 25,
+                pointerEvents: "none",
               }}
             />
-          </div>
-        )}
-        <form onSubmit={handleAddBookSubmit} className="add-book-form">
-          <h2>Добавить книгу</h2>
-          <input
-            type="text"
-            name="title"
-            placeholder="Название книги"
-            value={newBook.title}
-            onChange={handleInputChange}
-            required
-          />
-          <textarea
-            name="description"
-            placeholder="Описание"
-            value={newBook.description}
-            onChange={handleInputChange}
-          />
-          <input
-            type="file"
-            name="cover"
-            accept="image/png, image/jpeg"
-            onChange={(e) => setCoverFile(e.target.files[0])}
-          />
-          <button type="submit">Добавить книгу</button>
-        </form>
+          )}
+          <form
+            onSubmit={handleAddBookSubmit}
+            className="add-book-form"
+            style={{ position: "relative", zIndex: 2 }}
+          >
+            <h2>Добавить книгу</h2>
+            <input
+              type="text"
+              name="title"
+              placeholder="Название книги"
+              value={newBook.title}
+              onChange={handleInputChange}
+              required
+            />
+            <textarea
+              name="description"
+              placeholder="Описание"
+              value={newBook.description}
+              onChange={handleInputChange}
+            />
+            <input
+              type="file"
+              name="cover"
+              accept="image/png, image/jpeg"
+              onChange={(e) => setCoverFile(e.target.files[0])}
+            />
+            <button type="submit">Добавить книгу</button>
+          </form>
+        </div>
       </Modal>
 
       <Modal
@@ -325,50 +342,67 @@ const BooksPage = () => {
         onClose={() => setShowEditBookForm(false)}
         className="modal-add-book"
       >
-        {(coverFile || (selectedBook && selectedBook.cover_path)) && (
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <img
-              src={
-                coverFile
-                  ? URL.createObjectURL(coverFile)
-                  : `http://localhost/${selectedBook.cover_path}`
-              }
-              alt="Обложка"
+        <div
+          className="book-reader-content"
+          style={
+            coverFile || (selectedBook && selectedBook.cover_path)
+              ? {
+                  backgroundImage: `url(${
+                    coverFile
+                      ? URL.createObjectURL(coverFile)
+                      : `http://localhost/${selectedBook.cover_path}`
+                  })`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  position: "relative",
+                  minHeight: 400,
+                  borderRadius: 25,
+                }
+              : {}
+          }
+        >
+          {(coverFile || (selectedBook && selectedBook.cover_path)) && (
+            <div
               style={{
-                maxWidth: 180,
-                maxHeight: 240,
-                borderRadius: 12,
-                boxShadow: "0 4px 16px #0001",
-                objectFit: "cover",
-                margin: "0 auto",
+                position: "absolute",
+                inset: 0,
+                background: "rgba(255,255,255,0.82)",
+                zIndex: 1,
+                borderRadius: 25,
+                pointerEvents: "none",
               }}
             />
-          </div>
-        )}
-        <form onSubmit={handleEditBookSubmit} className="add-book-form">
-          <h2>Редактировать книгу</h2>
-          <input
-            type="text"
-            name="title"
-            placeholder="Название книги"
-            value={newBook.title}
-            onChange={handleInputChange}
-            required
-          />
-          <textarea
-            name="description"
-            placeholder="Описание"
-            value={newBook.description}
-            onChange={handleInputChange}
-          />
-          <input
-            type="file"
-            name="cover"
-            accept="image/png, image/jpeg"
-            onChange={(e) => setCoverFile(e.target.files[0])}
-          />
-          <button type="submit">Сохранить изменения</button>
-        </form>
+          )}
+          <form
+            onSubmit={handleEditBookSubmit}
+            className="add-book-form"
+            style={{ position: "relative", zIndex: 2 }}
+          >
+            <h2>Редактировать книгу</h2>
+            <input
+              type="text"
+              name="title"
+              placeholder="Название книги"
+              value={newBook.title}
+              onChange={handleInputChange}
+              required
+            />
+            <textarea
+              name="description"
+              placeholder="Описание"
+              value={newBook.description}
+              onChange={handleInputChange}
+            />
+            <input
+              type="file"
+              name="cover"
+              accept="image/png, image/jpeg"
+              onChange={(e) => setCoverFile(e.target.files[0])}
+            />
+            <button type="submit">Сохранить изменения</button>
+          </form>
+        </div>
       </Modal>
 
       <Modal
