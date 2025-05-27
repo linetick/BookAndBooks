@@ -5,43 +5,6 @@ import "../styles/MyBooksPage.css";
 import { Modal, ThemeToggle, ProfileButton } from "../components";
 import { FaTrash, FaPen, FaTimes, FaPlus } from "react-icons/fa";
 
-const TEST_USER_ID = "test_user_id";
-const TEST_BOOK_KEY = "test_books";
-const TEST_BOOK = {
-  id: "test_book_1",
-  title: "Тестовая книга",
-  description: "Это пример тестовой книги для демонстрации.",
-  author: "Тестовый пользователь",
-  cover_path: "", // Можно добавить base64 или оставить пустым
-  pages: [
-    {
-      content:
-        "Это текст тестовой книги. Вы можете его редактировать, удалять или добавлять новые книги только для тестового аккаунта.",
-    },
-  ],
-};
-
-function isTestUser() {
-  try {
-    const user = JSON.parse(localStorage.getItem("user"));
-    return user && user.id === TEST_USER_ID;
-  } catch {
-    return false;
-  }
-}
-
-function getTestBooks() {
-  const books = JSON.parse(localStorage.getItem(TEST_BOOK_KEY));
-  if (books && Array.isArray(books)) return books;
-  // Если книг нет, создаём одну тестовую
-  localStorage.setItem(TEST_BOOK_KEY, JSON.stringify([TEST_BOOK]));
-  return [TEST_BOOK];
-}
-
-function setTestBooks(books) {
-  localStorage.setItem(TEST_BOOK_KEY, JSON.stringify(books));
-}
-
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -68,12 +31,6 @@ const BooksPage = () => {
   const fetchBooks = async () => {
     setLoading(true);
     setError(null);
-    if (isTestUser()) {
-      // Для тестового пользователя книги только из localStorage
-      setBooks(getTestBooks());
-      setLoading(false);
-      return;
-    }
     try {
       const response = await axios.get("http://localhost/api/my_books.php", {
         withCredentials: true,
@@ -112,26 +69,6 @@ const BooksPage = () => {
 
   const handleAddBookSubmit = async (e) => {
     e.preventDefault();
-    if (isTestUser()) {
-      // Для тестового пользователя сохраняем книгу в localStorage
-      const books = getTestBooks();
-      const newId = "test_book_" + (books.length + 1);
-      const book = {
-        id: newId,
-        title: newBook.title,
-        description: newBook.description,
-        author: "Тестовый пользователь",
-        cover_path: "",
-        pages: [{ content: "" }],
-      };
-      setTestBooks([...books, book]);
-      setShowAddBookForm(false);
-      setNewBook({ title: "", description: "" });
-      setCoverFile(null);
-      setBooks(getTestBooks());
-      return;
-    }
-
     const formData = new FormData();
     formData.append("title", newBook.title);
     formData.append("description", newBook.description);
@@ -165,16 +102,6 @@ const BooksPage = () => {
   };
 
   const confirmDeleteBook = async () => {
-    if (isTestUser()) {
-      // Для тестового пользователя удаляем книгу из localStorage
-      const books = getTestBooks().filter((b) => b.id !== deleteBookId);
-      setTestBooks(books);
-      setShowDeleteConfirm(false);
-      setDeleteBookId(null);
-      setDeleteBookTitle("");
-      setBooks(getTestBooks());
-      return;
-    }
     try {
       await axios.post(
         "http://localhost/api/book_delete.php",
@@ -205,21 +132,6 @@ const BooksPage = () => {
 
   const handleEditBookSubmit = async (e) => {
     e.preventDefault();
-    if (isTestUser()) {
-      // Для тестового пользователя редактируем книгу в localStorage
-      const books = getTestBooks().map((b) =>
-        b.id === editBookId
-          ? { ...b, title: newBook.title, description: newBook.description }
-          : b
-      );
-      setTestBooks(books);
-      setShowEditBookForm(false);
-      setEditBookId(null);
-      setNewBook({ title: "", description: "" });
-      setCoverFile(null);
-      setBooks(getTestBooks());
-      return;
-    }
     const formData = new FormData();
     formData.append("id", editBookId);
     formData.append("title", newBook.title);
@@ -289,17 +201,6 @@ const BooksPage = () => {
   };
 
   const saveBookText = async (pagesToSave) => {
-    if (isTestUser()) {
-      // Для тестового пользователя сохраняем текст книги в localStorage
-      const books = getTestBooks().map((b) =>
-        b.id === textEditBook.id
-          ? { ...b, pages: pagesToSave.map((content) => ({ content })) }
-          : b
-      );
-      setTestBooks(books);
-      setBooks(getTestBooks());
-      return;
-    }
     try {
       await axios.post(
         "http://localhost/api/book_text_edit.php",
@@ -624,38 +525,12 @@ const BooksPage = () => {
               alignItems: "center",
             }}
           >
-            <textarea
-              style={{
-                minHeight: 340,
-                height: "50vh",
-                width: "100%",
-                fontSize: "1.15rem",
-                resize: "vertical",
-                borderRadius: 12,
-                padding: "1.2rem",
-                border: "1.5px solid #dbeafe",
-                background: "#f6faff",
-                marginBottom: 18,
-                boxSizing: "border-box",
-              }}
-              value={pages[currentPage]}
-              onChange={handleTextChange}
-              placeholder="Введите или измените текст книги..."
-            />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 18,
-                marginBottom: 12,
-                width: "100%",
-                justifyContent: "space-between",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+            <div className="page-nav-panel">
+              <div className="page-nav-controls">
                 <button
                   onClick={() => handlePageNav(-1)}
                   disabled={currentPage === 0}
+                  className="page-nav-btn"
                   style={{
                     fontSize: 22,
                     borderRadius: "50%",
@@ -675,6 +550,7 @@ const BooksPage = () => {
                 <button
                   onClick={() => handlePageNav(1)}
                   disabled={currentPage === pages.length - 1}
+                  className="page-nav-btn"
                   style={{
                     fontSize: 22,
                     borderRadius: "50%",
@@ -692,57 +568,23 @@ const BooksPage = () => {
                   &gt;
                 </button>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginLeft: "auto",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "1.05rem",
-                    color: "#1976d2",
-                    fontWeight: 500,
-                    marginRight: 6,
-                  }}
-                >
-                  Добавить страницу
-                </span>
+              <div className="add-page-panel">
+                <span className="add-page-label">Добавить страницу</span>
                 <button
                   onClick={handleAddPage}
                   title="Создать страницу"
-                  style={{
-                    fontSize: 22,
-                    borderRadius: "50%",
-                    width: 44,
-                    height: 44,
-                    border: "none",
-                    background: "#f6faff",
-                    color: "#3498db",
-                    boxShadow: "0 2px 8px #dbeafe",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.background = "#e0f2fe";
-                    e.currentTarget.style.color = "#1976d2";
-                    e.currentTarget.style.boxShadow = "0 4px 16px #b3e0fc";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.background = "#f6faff";
-                    e.currentTarget.style.color = "#3498db";
-                    e.currentTarget.style.boxShadow = "0 2px 8px #dbeafe";
-                  }}
+                  className="add-page-btn"
                 >
                   <FaPlus />
                 </button>
               </div>
             </div>
+            <textarea
+              className="editor-textarea"
+              value={pages[currentPage]}
+              onChange={handleTextChange}
+              placeholder="Введите или измените текст книги..."
+            />
           </div>
         </div>
       </Modal>
