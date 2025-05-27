@@ -10,8 +10,14 @@ const Layout = () => {
         <main style={{ minHeight: '60vh' }}>
           <Outlet />
         </main>
-        <footer style={{ background: '#f5f5f5', padding: 10, textAlign: 'center' }}>
-          <p>© 2024 BookAndBooks</p>
+        <footer style={{ 
+          background: 'var(--card-bg)', 
+          color: 'var(--text-primary)',
+          padding: 10, 
+          textAlign: 'center',
+          transition: 'background-color 0.3s ease, color 0.3s ease'
+        }}>
+          <p>2025 Архиреев А.В. Михайлова К.Ю.</p>
         </footer>
       </div>
     </div>

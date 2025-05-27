@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import "./LoginPage.css";
 import "../App.css";
 import { ThemeToggle } from "../components";
+import { TestAccountLogin } from "../components/TestAccountLogin";
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
@@ -21,6 +22,7 @@ const LoginPage = () => {
         body: JSON.stringify({ loginInput, password }),
       });
       if (response.ok) {
+        login();
         localStorage.setItem("isAuthenticated", "true");
         navigate("/", { state: { justLoggedIn: true } });
       } else {
@@ -77,6 +79,7 @@ const LoginPage = () => {
           <p>
             Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
           </p>
+          <TestAccountLogin />
         </div>
       </div>
     </div>
