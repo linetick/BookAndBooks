@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from '../components/ThemeToggle';
-import './ProfilePage.css';
+import '../styles/ProfilePage.css';
 
 const LogoutButton = ({ onLogout }) => {
   const navigate = useNavigate();

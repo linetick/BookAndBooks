@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./LoginPage.css";
+import "../styles/LoginPage.css";
 import "../App.css";
 import NavigationMenu from "../components/NavigationMenu";
 

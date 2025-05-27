@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./RegisterPage.css";
+import "../styles/RegisterPage.css";
 import "../App.css";
 import { ThemeToggle } from "../components";
 //import { set } from "mongoose";

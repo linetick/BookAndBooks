@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './HomePage.css';
+import '../styles/HomePage.css';
 import '../App.css';
 import { ThemeToggle, ProfileButton } from "../components";
 
