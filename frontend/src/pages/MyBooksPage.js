@@ -153,14 +153,27 @@ const BooksPage = () => {
               alt={book.title}
               className="book-cover"
             />
-            <div className="book-info">
-              <h2 className="book-title">{book.title}</h2>
-              <p className="book-author">Автор: {book.author}</p>
-              <p className="book-description">{book.description}</p>
-              <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <div
+              className="book-info"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+              }}
+            >
+              <div>
+                <h2 className="book-title" style={{ marginBottom: 0 }}>
+                  {book.title}
+                </h2>
+                <p className="book-author">Автор: {book.author}</p>
+                <p className="book-description">{book.description}</p>
+              </div>
+              <div style={{ display: "flex", gap: 8, marginTop: 0 }}>
                 <button
                   className="edit-book-btn"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     console.log("edit click");
                     handleEditBookClick(book);
                   }}
@@ -172,7 +185,8 @@ const BooksPage = () => {
                 </button>
                 <button
                   className="delete-book-btn"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     console.log("delete click");
                     handleDeleteBook(book.id);
                   }}
