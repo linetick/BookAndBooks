@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "../styles/MyBooksPage.css";
 import { Modal, ThemeToggle, ProfileButton } from "../components";
-import { FaTrash, FaPen } from 'react-icons/fa';
+import { FaTrash, FaPen, FaTimes } from 'react-icons/fa';
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -24,6 +24,10 @@ const BooksPage = () => {
   const [showTextEditor, setShowTextEditor] = useState(false);
   const [textEditBook, setTextEditBook] = useState(null);
   const [bookText, setBookText] = useState("");
+  const [pages, setPages] = useState([""]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const saveTimeout = useRef(null);
+  const PAGE_LIMIT = 1800; // символов на страницу
 
   const fetchBooks = async () => {
     setLoading(true);
@@ -46,7 +50,14 @@ const BooksPage = () => {
 
   const handleBookClick = (book) => {
     setTextEditBook(book);
-    setBookText(book.pages && book.pages.length > 0 ? book.pages.map(p => p.content).join("\n\n") : "");
+    let text = book.pages && book.pages.length > 0 ? book.pages.map(p => p.content).join("\n\n") : "";
+    const splitPages = [];
+    for (let i = 0; i < text.length; i += PAGE_LIMIT) {
+      splitPages.push(text.slice(i, i + PAGE_LIMIT));
+    }
+    if (splitPages.length === 0) splitPages.push("");
+    setPages(splitPages);
+    setCurrentPage(0);
     setShowTextEditor(true);
   };
 
@@ -147,7 +158,7 @@ const BooksPage = () => {
     try {
       await axios.post('http://localhost/api/book_text_edit.php', {
         id: textEditBook.id,
-        text: bookText
+        text: pages[currentPage]
       }, { withCredentials: true });
       setShowTextEditor(false);
       setTextEditBook(null);
@@ -162,6 +173,45 @@ const BooksPage = () => {
     setShowTextEditor(false);
     setTextEditBook(null);
     setBookText("");
+  };
+
+  const saveBookText = async (pagesToSave) => {
+    try {
+      await axios.post('http://localhost/api/book_text_edit.php', {
+        id: textEditBook.id,
+        text: pagesToSave.join("\n\n")
+      }, { withCredentials: true });
+    } catch (err) {
+      // Можно добавить уведомление об ошибке
+    }
+  };
+
+  const handleTextChange = (e) => {
+    const newText = e.target.value;
+    const newPages = [...pages];
+    newPages[currentPage] = newText;
+    // Если текст превышает лимит, переносим остаток на следующую страницу
+    if (newText.length > PAGE_LIMIT) {
+      newPages[currentPage] = newText.slice(0, PAGE_LIMIT);
+      if (currentPage === pages.length - 1) {
+        newPages.push(newText.slice(PAGE_LIMIT));
+      } else {
+        newPages[currentPage + 1] = newText.slice(PAGE_LIMIT) + (newPages[currentPage + 1] || "");
+      }
+    }
+    setPages(newPages);
+    // Автосохранение с debounce
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => saveBookText(newPages), 1000);
+  };
+
+  const handlePageNav = (dir) => {
+    setCurrentPage((prev) => {
+      let next = prev + dir;
+      if (next < 0) next = 0;
+      if (next > pages.length - 1) next = pages.length - 1;
+      return next;
+    });
   };
 
   if (loading) {
@@ -271,9 +321,9 @@ const BooksPage = () => {
         onClose={() => setShowEditBookForm(false)}
         className="modal-add-book"
       >
-        <div className="add-book-form" style={{position:'relative'}}>
-          <button className="close-button" onClick={() => setShowEditBookForm(false)} style={{position:'absolute', top:18, right:18, zIndex:10}}>
-            ×
+        <div className="add-book-form" style={{position:'relative', maxWidth: '900px', width: '90vw', minHeight: 420}}>
+          <button className="close-button" onClick={() => setShowEditBookForm(false)} style={{position:'absolute', top:18, right:18, zIndex:10, width:40, height:40, borderRadius:'50%', background:'#f6faff', border:'1.5px solid #dbeafe', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, color:'#888', transition:'background 0.2s, color 0.2s'}}>
+            <FaTimes />
           </button>
           <h2>Редактировать книгу</h2>
           <input
@@ -318,22 +368,24 @@ const BooksPage = () => {
       <Modal
         isOpen={showTextEditor}
         onClose={handleCloseTextEditor}
-        className="modal-add-book"
+        className="modal-add-book text-editor-modal"
+        closeOnOverlayClick={false}
       >
-        <div className="add-book-form" style={{maxWidth: 540, position:'relative'}}>
-          <button className="close-button" onClick={handleCloseTextEditor} style={{position:'absolute', top:18, right:18, zIndex:10}}>
-            ×
-          </button>
-          <h2>Текст книги</h2>
-          <textarea
-            style={{minHeight: 220, fontSize: '1.1rem'}}
-            value={bookText}
-            onChange={e => setBookText(e.target.value)}
-            placeholder="Введите или измените текст книги..."
-          />
-          <div style={{display:'flex', gap:16, justifyContent:'center', marginTop: 18}}>
-            <button onClick={handleSaveBookText} style={{background:'var(--accent-color, #3498db)', color:'#fff', border:'none', borderRadius:8, padding:'0.7rem 2.2rem', fontWeight:600, fontSize:'1.1rem', cursor:'pointer'}}>Сохранить</button>
-            <button onClick={handleCloseTextEditor} style={{background:'#f6faff', color:'#222', border:'1.5px solid #dbeafe', borderRadius:8, padding:'0.7rem 2.2rem', fontWeight:500, fontSize:'1.1rem', cursor:'pointer'}}>Отмена</button>
+        <div className="add-book-form" style={{maxWidth: '90vw', width: '90vw', height: '90vh', minHeight: 500, position:'relative', display:'flex', flexDirection:'column', justifyContent:'flex-start', alignItems:'center', boxSizing:'border-box', padding:'2.5rem 2.5rem 2rem 2.5rem'}}>
+          <h2 style={{fontSize:'2.2rem', marginBottom: 24}}>Текст книги</h2>
+          <div style={{width:'100%', flex:1, display:'flex', flexDirection:'column', alignItems:'center'}}>
+            <textarea
+              style={{minHeight: 340, height: '50vh', width: '100%', fontSize: '1.15rem', resize:'vertical', borderRadius: 12, padding: '1.2rem', border: '1.5px solid #dbeafe', background:'#f6faff', marginBottom: 18, boxSizing:'border-box'}}
+              value={pages[currentPage]}
+              onChange={handleTextChange}
+              placeholder="Введите или измените текст книги..."
+              maxLength={PAGE_LIMIT + 1}
+            />
+            <div style={{display:'flex', alignItems:'center', gap: 18, marginBottom: 12}}>
+              <button onClick={() => handlePageNav(-1)} disabled={currentPage === 0} style={{fontSize: 22, borderRadius: '50%', width: 40, height: 40, border: 'none', background: '#e4e8eb', color: '#3498db', cursor: currentPage === 0 ? 'not-allowed' : 'pointer'}}>&lt;</button>
+              <span style={{fontWeight: 600, fontSize: '1.1rem'}}>Страница {currentPage + 1} из {pages.length}</span>
+              <button onClick={() => handlePageNav(1)} disabled={currentPage === pages.length - 1} style={{fontSize: 22, borderRadius: '50%', width: 40, height: 40, border: 'none', background: '#e4e8eb', color: '#3498db', cursor: currentPage === pages.length - 1 ? 'not-allowed' : 'pointer'}}>&gt;</button>
+            </div>
           </div>
         </div>
       </Modal>
