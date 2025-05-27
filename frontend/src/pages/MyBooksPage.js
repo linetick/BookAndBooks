@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "../styles/MyBooksPage.css";
 import { Modal, ThemeToggle, ProfileButton } from "../components";
-import { FaTrash, FaPen } from 'react-icons/fa';
+import { FaTrash, FaPen } from "react-icons/fa";
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -81,12 +81,16 @@ const BooksPage = () => {
   };
 
   const handleDeleteBook = async (bookId) => {
-    if (!window.confirm('Вы уверены, что хотите удалить эту книгу?')) return;
+    if (!window.confirm("Вы уверены, что хотите удалить эту книгу?")) return;
     try {
-      await axios.post('http://localhost/api/book_delete.php', { id: bookId }, { withCredentials: true });
+      await axios.post(
+        "http://localhost/api/book_delete.php",
+        { id: bookId },
+        { withCredentials: true }
+      );
       await fetchBooks();
     } catch (err) {
-      alert('Ошибка при удалении книги');
+      alert("Ошибка при удалении книги");
     }
   };
 
@@ -100,24 +104,24 @@ const BooksPage = () => {
   const handleEditBookSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('id', editBookId);
-    formData.append('title', newBook.title);
-    formData.append('description', newBook.description);
+    formData.append("id", editBookId);
+    formData.append("title", newBook.title);
+    formData.append("description", newBook.description);
     if (coverFile) {
-      formData.append('cover', coverFile);
+      formData.append("cover", coverFile);
     }
     try {
-      await axios.post('http://localhost/api/book_edit.php', formData, {
+      await axios.post("http://localhost/api/book_edit.php", formData, {
         withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
       });
       setShowEditBookForm(false);
       setEditBookId(null);
-      setNewBook({ title: '', description: '' });
+      setNewBook({ title: "", description: "" });
       setCoverFile(null);
       await fetchBooks();
     } catch (err) {
-      alert('Ошибка при редактировании книги');
+      alert("Ошибка при редактировании книги");
     }
   };
 
@@ -143,10 +147,7 @@ const BooksPage = () => {
 
       <div className="books-grid">
         {books.map((book) => (
-          <div
-            key={book.id}
-            className="book-card"
-          >
+          <div key={book.id} className="book-card">
             <img
               src={`http://localhost/${book.cover_path}`}
               alt={book.title}
@@ -156,11 +157,21 @@ const BooksPage = () => {
               <h2 className="book-title">{book.title}</h2>
               <p className="book-author">Автор: {book.author}</p>
               <p className="book-description">{book.description}</p>
-              <div style={{display:'flex', gap:8, marginTop:12}}>
-                <button className="edit-book-btn" onClick={() => handleEditBookClick(book)} type="button" title="Редактировать">
+              <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                <button
+                  className="edit-book-btn"
+                  onClick={() => handleEditBookClick(book)}
+                  type="button"
+                  title="Редактировать"
+                >
                   <FaPen />
                 </button>
-                <button className="delete-book-btn" onClick={() => handleDeleteBook(book.id)} type="button" title="Удалить">
+                <button
+                  className="delete-book-btn"
+                  onClick={() => handleDeleteBook(book.id)}
+                  type="button"
+                  title="Удалить"
+                >
                   <FaTrash />
                 </button>
               </div>

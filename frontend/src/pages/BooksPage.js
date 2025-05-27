@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../AuthContext"; // путь уточни
-import '../styles/BooksPage.css';
+import "../styles/BooksPage.css";
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -85,19 +85,25 @@ const BooksPage = () => {
 
   return (
     <div className="books-page">
-      <header className="header" style={{gap: 16}}>
+      <header className="header" style={{ gap: 16 }}>
         <Link to="/" className="logo">
           BookAndBooks
         </Link>
-        <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-          <span style={{fontWeight: 500, fontSize: 16}}>Найти книгу</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontWeight: 500, fontSize: 16 }}>Найти книгу</span>
           <input
             type="text"
             className="book-search-input"
             placeholder="Поиск"
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            style={{maxWidth: 320, padding: '0.5rem 1rem', borderRadius: 8, border: '1px solid var(--input-border)', fontSize: 16}}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              maxWidth: 320,
+              padding: "0.5rem 1rem",
+              borderRadius: 8,
+              border: "1px solid var(--input-border)",
+              fontSize: 16,
+            }}
           />
         </div>
       </header>
