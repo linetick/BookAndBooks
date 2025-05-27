@@ -237,52 +237,32 @@ const BooksPage = () => {
         onClose={() => setShowAddBookForm(false)}
         className="modal-add-book"
       >
-        <div
-          className="book-reader-content"
-          style={coverFile ? {
-            backgroundImage: `url(${URL.createObjectURL(coverFile)})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            minHeight: 400,
-            borderRadius: 25
-          } : {}}
-        >
-          {coverFile && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(255,255,255,0.82)',
-              zIndex: 1,
-              borderRadius: 25,
-              pointerEvents: 'none'
-            }} />
-          )}
-          <form onSubmit={handleAddBookSubmit} className="add-book-form" style={{position: 'relative', zIndex: 2}}>
-            <h2>Добавить книгу</h2>
-            <input
-              type="text"
-              name="title"
-              placeholder="Название книги"
-              value={newBook.title}
-              onChange={handleInputChange}
-              required
-            />
-            <textarea
-              name="description"
-              placeholder="Описание"
-              value={newBook.description}
-              onChange={handleInputChange}
-            />
-            <input
-              type="file"
-              name="cover"
-              accept="image/png, image/jpeg"
-              onChange={(e) => setCoverFile(e.target.files[0])}
-            />
-            <button type="submit">Добавить книгу</button>
-          </form>
+        <div className="add-book-form" style={{position:'relative'}}>
+          <button className="close-button" onClick={() => setShowAddBookForm(false)} style={{position:'absolute', top:18, right:18, zIndex:10}}>
+            ×
+          </button>
+          <h2>Добавить книгу</h2>
+          <input
+            type="text"
+            name="title"
+            placeholder="Название книги"
+            value={newBook.title}
+            onChange={handleInputChange}
+            required
+          />
+          <textarea
+            name="description"
+            placeholder="Описание"
+            value={newBook.description}
+            onChange={handleInputChange}
+          />
+          <input
+            type="file"
+            name="cover"
+            accept="image/png, image/jpeg"
+            onChange={(e) => setCoverFile(e.target.files[0])}
+          />
+          <button type="submit">Добавить книгу</button>
         </div>
       </Modal>
 
@@ -291,52 +271,32 @@ const BooksPage = () => {
         onClose={() => setShowEditBookForm(false)}
         className="modal-add-book"
       >
-        <div
-          className="book-reader-content"
-          style={(coverFile || (selectedBook && selectedBook.cover_path)) ? {
-            backgroundImage: `url(${coverFile ? URL.createObjectURL(coverFile) : `http://localhost/${selectedBook.cover_path}`})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            position: 'relative',
-            minHeight: 400,
-            borderRadius: 25
-          } : {}}
-        >
-          {(coverFile || (selectedBook && selectedBook.cover_path)) && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(255,255,255,0.82)',
-              zIndex: 1,
-              borderRadius: 25,
-              pointerEvents: 'none'
-            }} />
-          )}
-          <form onSubmit={handleEditBookSubmit} className="add-book-form" style={{position: 'relative', zIndex: 2}}>
-            <h2>Редактировать книгу</h2>
-            <input
-              type="text"
-              name="title"
-              placeholder="Название книги"
-              value={newBook.title}
-              onChange={handleInputChange}
-              required
-            />
-            <textarea
-              name="description"
-              placeholder="Описание"
-              value={newBook.description}
-              onChange={handleInputChange}
-            />
-            <input
-              type="file"
-              name="cover"
-              accept="image/png, image/jpeg"
-              onChange={(e) => setCoverFile(e.target.files[0])}
-            />
-            <button type="submit">Сохранить изменения</button>
-          </form>
+        <div className="add-book-form" style={{position:'relative'}}>
+          <button className="close-button" onClick={() => setShowEditBookForm(false)} style={{position:'absolute', top:18, right:18, zIndex:10}}>
+            ×
+          </button>
+          <h2>Редактировать книгу</h2>
+          <input
+            type="text"
+            name="title"
+            placeholder="Название книги"
+            value={newBook.title}
+            onChange={handleInputChange}
+            required
+          />
+          <textarea
+            name="description"
+            placeholder="Описание"
+            value={newBook.description}
+            onChange={handleInputChange}
+          />
+          <input
+            type="file"
+            name="cover"
+            accept="image/png, image/jpeg"
+            onChange={(e) => setCoverFile(e.target.files[0])}
+          />
+          <button type="submit">Сохранить изменения</button>
         </div>
       </Modal>
 
@@ -360,7 +320,10 @@ const BooksPage = () => {
         onClose={handleCloseTextEditor}
         className="modal-add-book"
       >
-        <div className="add-book-form" style={{maxWidth: 540}}>
+        <div className="add-book-form" style={{maxWidth: 540, position:'relative'}}>
+          <button className="close-button" onClick={handleCloseTextEditor} style={{position:'absolute', top:18, right:18, zIndex:10}}>
+            ×
+          </button>
           <h2>Текст книги</h2>
           <textarea
             style={{minHeight: 220, fontSize: '1.1rem'}}
