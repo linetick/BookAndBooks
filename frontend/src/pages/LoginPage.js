@@ -22,6 +22,7 @@ const LoginPage = () => {
       });
       if (response.ok) {
         localStorage.setItem("isAuthenticated", "true");
+        login();
         navigate("/", { state: { justLoggedIn: true } });
       } else {
         alert("Неверный логин или пароль");

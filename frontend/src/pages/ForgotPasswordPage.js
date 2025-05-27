@@ -73,9 +73,9 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex" }}>
       <NavigationMenu />
-      <div style={{ marginLeft: 56, width: '100%' }}>
+      <div style={{ marginLeft: 56, width: "100%" }}>
         <div className="auth-page">
           <header className="header">
             <Link to="/" className="logo">
@@ -100,7 +100,11 @@ const ForgotPasswordPage = () => {
                     autoComplete="email"
                   />
                 </div>
-                <button type="submit" className="auth-button" disabled={loading}>
+                <button
+                  type="submit"
+                  className="auth-button"
+                  disabled={loading}
+                >
                   <span>Отправить код</span>
                 </button>
               </form>
@@ -143,7 +147,11 @@ const ForgotPasswordPage = () => {
                     autoComplete="new-password"
                   />
                 </div>
-                <button type="submit" className="auth-button" disabled={loading}>
+                <button
+                  type="submit"
+                  className="auth-button"
+                  disabled={loading}
+                >
                   <span>Сменить пароль</span>
                 </button>
               </form>
@@ -151,7 +159,13 @@ const ForgotPasswordPage = () => {
             {step === 3 && (
               <div style={{ textAlign: "center", marginTop: 32 }}>
                 <p>Пароль успешно изменён!</p>
-                <Link to="/login" className="nav-button" style={{marginTop: 24, display: 'inline-block'}}>Вернуться ко входу</Link>
+                <Link
+                  to="/login"
+                  className="nav-button"
+                  style={{ marginTop: 24, display: "inline-block" }}
+                >
+                  Вернуться ко входу
+                </Link>
               </div>
             )}
           </div>
@@ -161,4 +175,4 @@ const ForgotPasswordPage = () => {
   );
 };
 
-export default ForgotPasswordPage; 
+export default ForgotPasswordPage;
