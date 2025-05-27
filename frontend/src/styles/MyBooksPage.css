@@ -153,7 +153,6 @@
   border-radius: 20px;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
   box-shadow: 0 8px 32px var(--card-shadow);
   position: relative;
 }
@@ -629,22 +628,24 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s, transform 0.15s, color 0.2s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s, color 0.2s, border 0.2s;
   font-size: 1.3rem;
   box-shadow: 0 2px 8px var(--card-shadow, #e0e0e0);
   padding: 0;
   pointer-events: auto;
   outline: none;
   border: 2px solid transparent;
+  z-index: 2;
+  position: relative;
 }
 
-.edit-book-btn:hover, .delete-book-btn:hover, .open-book-btn:hover, .edit-book-btn:focus, .delete-book-btn:focus, .open-book-btn:focus {
+.edit-book-btn:hover, .delete-book-btn:hover, .edit-book-btn:focus, .delete-book-btn:focus {
   background: var(--accent-color, #3498db);
   color: #fff;
-  transform: scale(1.13);
+  transform: scale(1.15);
   box-shadow: 0 4px 18px var(--accent-color, #3498db);
   border: 2px solid var(--accent-color, #3498db);
-  z-index: 2;
+  z-index: 3;
 }
 
 .delete-book-btn {
