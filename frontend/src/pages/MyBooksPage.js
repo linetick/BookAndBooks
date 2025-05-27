@@ -366,17 +366,17 @@ const BooksPage = () => {
         className="modal-add-book text-editor-modal"
         closeOnOverlayClick={false}
       >
-        <div className="add-book-form">
-          <button className="close-button" onClick={handleCloseTextEditor}>
+        <div className="add-book-form" style={{maxWidth: '90vw', width: '90vw', height: '90vh', minHeight: 500, position:'relative', display:'flex', flexDirection:'column', justifyContent:'flex-start', alignItems:'center', boxSizing:'border-box', padding:'2.5rem 2.5rem 2rem 2.5rem'}}>
+          <button className="close-button" onClick={handleCloseTextEditor} style={{position:'absolute', top:18, right:18, zIndex:10, width:40, height:40, borderRadius:'50%', background:'#f6faff', border:'1.5px solid #dbeafe', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, color:'#888', transition:'background 0.2s, color 0.2s'}}>
             <FaTimes />
           </button>
-          <h2>Текст книги</h2>
-          <div>
+          <h2 style={{fontSize:'2.2rem', marginBottom: 24}}>Текст книги</h2>
+          <div style={{width:'100%', flex:1, display:'flex', flexDirection:'column', alignItems:'center'}}>
             <div className="page-nav-panel">
               <div className="page-nav-controls">
-                <button onClick={() => handlePageNav(-1)} disabled={currentPage === 0} className="page-nav-btn">&lt;</button>
-                <span>Страница {currentPage + 1} из {pages.length}</span>
-                <button onClick={() => handlePageNav(1)} disabled={currentPage === pages.length - 1} className="page-nav-btn">&gt;</button>
+                <button onClick={() => handlePageNav(-1)} disabled={currentPage === 0} className="page-nav-btn" style={{fontSize: 22, borderRadius: '50%', width: 40, height: 40, border: 'none', background: '#e4e8eb', color: '#3498db', cursor: currentPage === 0 ? 'not-allowed' : 'pointer'}}>&lt;</button>
+                <span style={{fontWeight: 600, fontSize: '1.1rem'}}>Страница {currentPage + 1} из {pages.length}</span>
+                <button onClick={() => handlePageNav(1)} disabled={currentPage === pages.length - 1} className="page-nav-btn" style={{fontSize: 22, borderRadius: '50%', width: 40, height: 40, border: 'none', background: '#e4e8eb', color: '#3498db', cursor: currentPage === pages.length - 1 ? 'not-allowed' : 'pointer'}}>&gt;</button>
               </div>
               <div className="add-page-panel">
                 <span className="add-page-label">Добавить страницу</span>
@@ -391,7 +391,7 @@ const BooksPage = () => {
               onChange={handleTextChange}
               placeholder="Введите или измените текст книги..."
             />
-            <button onClick={handleSaveBookText} type="button" className="save-button">Сохранить</button>
+            <button onClick={handleSaveBookText} type="button" style={{marginTop: 16, padding: '0.5rem 1rem', background: '#3498db', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer'}}>Сохранить</button>
           </div>
         </div>
       </Modal>
