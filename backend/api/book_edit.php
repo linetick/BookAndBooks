@@ -68,6 +68,15 @@ if (isset($_FILES['cover']) && $_FILES['cover']['error'] === UPLOAD_ERR_OK) {
         exit;
     }
 
+    try {
+    addWatermark($fullPath);
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Ошибка при добавлении водяного знака', 'details' => $e->getMessage()]);
+    error_log("Ошибка водяного знака: " . $e->getMessage());
+    exit;
+}
+
     $coverPath = $relativePath;
     $uploadNewCover = true;
 }

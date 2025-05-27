@@ -54,12 +54,14 @@ try {
     $mail->Port = 465;
 
     $mail->setFrom('mikhailova121327@yandex.ru', 'BookNBook Support');
+    $mail->addReplyTo('mikhailova121327@yandex.ru', 'BookNBook Support');
     $mail->addAddress($email);
 
     $mail->CharSet = 'UTF-8';
     $mail->Encoding = 'base64';
     $mail->Subject = 'Восстановление пароля';
     $mail->Body = "Ваш код для восстановления пароля: $resetCode\n\nОн действует 15 минут.";
+    $mail->AltBody = "Ваш код для восстановления пароля: $resetCode\n\nОн действует 15 минут.";
 
     $mail->send();
     echo json_encode(['message' => 'Код отправлен на email']);

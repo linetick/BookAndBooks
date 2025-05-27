@@ -4,6 +4,8 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
+require_once __DIR__.'/../lib/utils.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -56,6 +58,15 @@ if (isset($_FILES['cover']) && $_FILES['cover']['error'] === UPLOAD_ERR_OK) {
         echo json_encode(['error' => 'Не удалось сохранить файл']);
         exit;
     }
+ try {
+    addWatermark($fullPath);
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Ошибка при добавлении водяного знака', 'details' => $e->getMessage()]);
+    error_log("Ошибка водяного знака: " . $e->getMessage());
+    exit;
+}
+
 
     $coverPath = $relativePath;
 }
