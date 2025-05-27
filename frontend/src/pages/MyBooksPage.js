@@ -326,11 +326,10 @@ const BooksPage = () => {
         onClose={() => setShowAddBookForm(false)}
         className="modal-add-book"
       >
-        <div className="add-book-form" style={{ position: "relative" }}>
+        <form className="add-book-form" onSubmit={handleAddBookSubmit}>
           <button
             className="close-button"
             onClick={() => setShowAddBookForm(false)}
-            style={{ position: "absolute", top: 18, right: 18, zIndex: 10 }}
           >
             ×
           </button>
@@ -356,7 +355,7 @@ const BooksPage = () => {
             onChange={(e) => setCoverFile(e.target.files[0])}
           />
           <button type="submit">Добавить книгу</button>
-        </div>
+        </form>
       </Modal>
 
       <Modal
@@ -364,35 +363,10 @@ const BooksPage = () => {
         onClose={() => setShowEditBookForm(false)}
         className="modal-add-book"
       >
-        <div
-          className="add-book-form"
-          style={{
-            position: "relative",
-            maxWidth: "900px",
-            width: "90vw",
-            minHeight: 420,
-          }}
-        >
+        <form className="add-book-form" onSubmit={handleEditBookSubmit}>
           <button
             className="close-button"
             onClick={() => setShowEditBookForm(false)}
-            style={{
-              position: "absolute",
-              top: 18,
-              right: 18,
-              zIndex: 10,
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: "#f6faff",
-              border: "1.5px solid #dbeafe",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 22,
-              color: "#888",
-              transition: "background 0.2s, color 0.2s",
-            }}
           >
             <FaTimes />
           </button>
@@ -418,7 +392,7 @@ const BooksPage = () => {
             onChange={(e) => setCoverFile(e.target.files[0])}
           />
           <button type="submit">Сохранить изменения</button>
-        </div>
+        </form>
       </Modal>
 
       <Modal
@@ -438,32 +412,11 @@ const BooksPage = () => {
           <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
             <button
               onClick={confirmDeleteBook}
-              style={{
-                background: "#e74c3c",
-                color: "#fff",
-                border: "none",
-                borderRadius: 8,
-                padding: "0.7rem 2.2rem",
-                fontWeight: 600,
-                fontSize: "1.1rem",
-                cursor: "pointer",
-              }}
+              className="delete-confirm-button"
             >
               Удалить
             </button>
-            <button
-              onClick={cancelDeleteBook}
-              style={{
-                background: "#f6faff",
-                color: "#222",
-                border: "1.5px solid #dbeafe",
-                borderRadius: 8,
-                padding: "0.7rem 2.2rem",
-                fontWeight: 500,
-                fontSize: "1.1rem",
-                cursor: "pointer",
-              }}
-            >
+            <button onClick={cancelDeleteBook} className="cancel-button">
               Отмена
             </button>
           </div>
@@ -476,94 +429,28 @@ const BooksPage = () => {
         className="modal-add-book text-editor-modal"
         closeOnOverlayClick={false}
       >
-        <div
-          className="add-book-form"
-          style={{
-            maxWidth: "90vw",
-            width: "90vw",
-            height: "90vh",
-            minHeight: 500,
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            boxSizing: "border-box",
-            padding: "2.5rem 2.5rem 2rem 2.5rem",
-          }}
-        >
-          <button
-            className="close-button"
-            onClick={handleCloseTextEditor}
-            style={{
-              position: "absolute",
-              top: 18,
-              right: 18,
-              zIndex: 10,
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: "#f6faff",
-              border: "1.5px solid #dbeafe",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 22,
-              color: "#888",
-              transition: "background 0.2s, color 0.2s",
-            }}
-          >
+        <div className="add-book-form">
+          <button className="close-button" onClick={handleCloseTextEditor}>
             <FaTimes />
           </button>
-          <h2 style={{ fontSize: "2.2rem", marginBottom: 24 }}>Текст книги</h2>
-          <div
-            style={{
-              width: "100%",
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
+          <h2>Текст книги</h2>
+          <div>
             <div className="page-nav-panel">
               <div className="page-nav-controls">
                 <button
                   onClick={() => handlePageNav(-1)}
                   disabled={currentPage === 0}
                   className="page-nav-btn"
-                  style={{
-                    fontSize: 22,
-                    borderRadius: "50%",
-                    width: 40,
-                    height: 40,
-                    border: "none",
-                    background: "#e4e8eb",
-                    color: "#3498db",
-                    cursor: currentPage === 0 ? "not-allowed" : "pointer",
-                  }}
                 >
                   &lt;
                 </button>
-                <span style={{ fontWeight: 600, fontSize: "1.1rem" }}>
+                <span>
                   Страница {currentPage + 1} из {pages.length}
                 </span>
                 <button
                   onClick={() => handlePageNav(1)}
                   disabled={currentPage === pages.length - 1}
                   className="page-nav-btn"
-                  style={{
-                    fontSize: 22,
-                    borderRadius: "50%",
-                    width: 40,
-                    height: 40,
-                    border: "none",
-                    background: "#e4e8eb",
-                    color: "#3498db",
-                    cursor:
-                      currentPage === pages.length - 1
-                        ? "not-allowed"
-                        : "pointer",
-                  }}
                 >
                   &gt;
                 </button>
@@ -585,6 +472,13 @@ const BooksPage = () => {
               onChange={handleTextChange}
               placeholder="Введите или измените текст книги..."
             />
+            <button
+              onClick={handleSaveBookText}
+              type="button"
+              className="save-button"
+            >
+              Сохранить
+            </button>
           </div>
         </div>
       </Modal>
