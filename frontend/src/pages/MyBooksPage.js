@@ -3,7 +3,41 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "../styles/MyBooksPage.css";
 import { Modal, ThemeToggle, ProfileButton } from "../components";
-import { FaTrash, FaPen, FaTimes } from 'react-icons/fa';
+import { FaTrash, FaPen, FaTimes, FaPlus } from 'react-icons/fa';
+
+const TEST_USER_ID = 'test_user_id';
+const TEST_BOOK_KEY = 'test_books';
+const TEST_BOOK = {
+  id: 'test_book_1',
+  title: 'Тестовая книга',
+  description: 'Это пример тестовой книги для демонстрации.',
+  author: 'Тестовый пользователь',
+  cover_path: '', // Можно добавить base64 или оставить пустым
+  pages: [
+    { content: 'Это текст тестовой книги. Вы можете его редактировать, удалять или добавлять новые книги только для тестового аккаунта.' }
+  ]
+};
+
+function isTestUser() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user && user.id === TEST_USER_ID;
+  } catch {
+    return false;
+  }
+}
+
+function getTestBooks() {
+  const books = JSON.parse(localStorage.getItem(TEST_BOOK_KEY));
+  if (books && Array.isArray(books)) return books;
+  // Если книг нет, создаём одну тестовую
+  localStorage.setItem(TEST_BOOK_KEY, JSON.stringify([TEST_BOOK]));
+  return [TEST_BOOK];
+}
+
+function setTestBooks(books) {
+  localStorage.setItem(TEST_BOOK_KEY, JSON.stringify(books));
+}
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -27,11 +61,16 @@ const BooksPage = () => {
   const [pages, setPages] = useState([""]);
   const [currentPage, setCurrentPage] = useState(0);
   const saveTimeout = useRef(null);
-  const PAGE_LIMIT = 1800; // символов на страницу
 
   const fetchBooks = async () => {
     setLoading(true);
     setError(null);
+    if (isTestUser()) {
+      // Для тестового пользователя книги только из localStorage
+      setBooks(getTestBooks());
+      setLoading(false);
+      return;
+    }
     try {
       const response = await axios.get("http://localhost/api/my_books.php", {
         withCredentials: true,
@@ -50,13 +89,8 @@ const BooksPage = () => {
 
   const handleBookClick = (book) => {
     setTextEditBook(book);
-    let text = book.pages && book.pages.length > 0 ? book.pages.map(p => p.content).join("\n\n") : "";
-    const splitPages = [];
-    for (let i = 0; i < text.length; i += PAGE_LIMIT) {
-      splitPages.push(text.slice(i, i + PAGE_LIMIT));
-    }
-    if (splitPages.length === 0) splitPages.push("");
-    setPages(splitPages);
+    let textPages = book.pages && book.pages.length > 0 ? book.pages.map(p => p.content) : [''];
+    setPages(textPages);
     setCurrentPage(0);
     setShowTextEditor(true);
   };
@@ -72,6 +106,25 @@ const BooksPage = () => {
 
   const handleAddBookSubmit = async (e) => {
     e.preventDefault();
+    if (isTestUser()) {
+      // Для тестового пользователя сохраняем книгу в localStorage
+      const books = getTestBooks();
+      const newId = 'test_book_' + (books.length + 1);
+      const book = {
+        id: newId,
+        title: newBook.title,
+        description: newBook.description,
+        author: 'Тестовый пользователь',
+        cover_path: '',
+        pages: [{ content: '' }],
+      };
+      setTestBooks([...books, book]);
+      setShowAddBookForm(false);
+      setNewBook({ title: '', description: '' });
+      setCoverFile(null);
+      setBooks(getTestBooks());
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", newBook.title);
@@ -106,6 +159,16 @@ const BooksPage = () => {
   };
 
   const confirmDeleteBook = async () => {
+    if (isTestUser()) {
+      // Для тестового пользователя удаляем книгу из localStorage
+      const books = getTestBooks().filter(b => b.id !== deleteBookId);
+      setTestBooks(books);
+      setShowDeleteConfirm(false);
+      setDeleteBookId(null);
+      setDeleteBookTitle("");
+      setBooks(getTestBooks());
+      return;
+    }
     try {
       await axios.post('http://localhost/api/book_delete.php', { id: deleteBookId }, { withCredentials: true });
       setShowDeleteConfirm(false);
@@ -132,6 +195,19 @@ const BooksPage = () => {
 
   const handleEditBookSubmit = async (e) => {
     e.preventDefault();
+    if (isTestUser()) {
+      // Для тестового пользователя редактируем книгу в localStorage
+      const books = getTestBooks().map(b =>
+        b.id === editBookId ? { ...b, title: newBook.title, description: newBook.description } : b
+      );
+      setTestBooks(books);
+      setShowEditBookForm(false);
+      setEditBookId(null);
+      setNewBook({ title: '', description: '' });
+      setCoverFile(null);
+      setBooks(getTestBooks());
+      return;
+    }
     const formData = new FormData();
     formData.append('id', editBookId);
     formData.append('title', newBook.title);
@@ -169,13 +245,43 @@ const BooksPage = () => {
     }
   };
 
+  const handleTextChange = (e) => {
+    const newText = e.target.value;
+    let newPages = [...pages];
+    newPages[currentPage] = newText;
+    setPages(newPages);
+    // Автосохранение с debounce
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => saveBookText(newPages), 1000);
+  };
+
+  const handleAddPage = () => {
+    const newPages = [...pages, ''];
+    setPages(newPages);
+    setCurrentPage(newPages.length - 1);
+  };
+
   const handleCloseTextEditor = () => {
+    // Удаляем все пустые страницы, кроме первой
+    let newPages = pages.filter((p, i) => p.trim().length > 0 || i === 0);
+    if (newPages.length === 0) newPages = [''];
+    setPages(newPages);
+    saveBookText(newPages); // сохраняем изменения
     setShowTextEditor(false);
     setTextEditBook(null);
     setBookText("");
   };
 
   const saveBookText = async (pagesToSave) => {
+    if (isTestUser()) {
+      // Для тестового пользователя сохраняем текст книги в localStorage
+      const books = getTestBooks().map(b =>
+        b.id === textEditBook.id ? { ...b, pages: pagesToSave.map(content => ({ content })) } : b
+      );
+      setTestBooks(books);
+      setBooks(getTestBooks());
+      return;
+    }
     try {
       await axios.post('http://localhost/api/book_text_edit.php', {
         id: textEditBook.id,
@@ -184,25 +290,6 @@ const BooksPage = () => {
     } catch (err) {
       // Можно добавить уведомление об ошибке
     }
-  };
-
-  const handleTextChange = (e) => {
-    const newText = e.target.value;
-    const newPages = [...pages];
-    newPages[currentPage] = newText;
-    // Если текст превышает лимит, переносим остаток на следующую страницу
-    if (newText.length > PAGE_LIMIT) {
-      newPages[currentPage] = newText.slice(0, PAGE_LIMIT);
-      if (currentPage === pages.length - 1) {
-        newPages.push(newText.slice(PAGE_LIMIT));
-      } else {
-        newPages[currentPage + 1] = newText.slice(PAGE_LIMIT) + (newPages[currentPage + 1] || "");
-      }
-    }
-    setPages(newPages);
-    // Автосохранение с debounce
-    if (saveTimeout.current) clearTimeout(saveTimeout.current);
-    saveTimeout.current = setTimeout(() => saveBookText(newPages), 1000);
   };
 
   const handlePageNav = (dir) => {
@@ -382,12 +469,22 @@ const BooksPage = () => {
               value={pages[currentPage]}
               onChange={handleTextChange}
               placeholder="Введите или измените текст книги..."
-              maxLength={PAGE_LIMIT + 1}
             />
-            <div style={{display:'flex', alignItems:'center', gap: 18, marginBottom: 12}}>
-              <button onClick={() => handlePageNav(-1)} disabled={currentPage === 0} style={{fontSize: 22, borderRadius: '50%', width: 40, height: 40, border: 'none', background: '#e4e8eb', color: '#3498db', cursor: currentPage === 0 ? 'not-allowed' : 'pointer'}}>&lt;</button>
-              <span style={{fontWeight: 600, fontSize: '1.1rem'}}>Страница {currentPage + 1} из {pages.length}</span>
-              <button onClick={() => handlePageNav(1)} disabled={currentPage === pages.length - 1} style={{fontSize: 22, borderRadius: '50%', width: 40, height: 40, border: 'none', background: '#e4e8eb', color: '#3498db', cursor: currentPage === pages.length - 1 ? 'not-allowed' : 'pointer'}}>&gt;</button>
+            <div style={{display:'flex', alignItems:'center', gap: 18, marginBottom: 12, width:'100%', justifyContent:'space-between'}}>
+              <div style={{display:'flex', alignItems:'center', gap: 18}}>
+                <button onClick={() => handlePageNav(-1)} disabled={currentPage === 0} style={{fontSize: 22, borderRadius: '50%', width: 40, height: 40, border: 'none', background: '#e4e8eb', color: '#3498db', cursor: currentPage === 0 ? 'not-allowed' : 'pointer'}}>&lt;</button>
+                <span style={{fontWeight: 600, fontSize: '1.1rem'}}>Страница {currentPage + 1} из {pages.length}</span>
+                <button onClick={() => handlePageNav(1)} disabled={currentPage === pages.length - 1} style={{fontSize: 22, borderRadius: '50%', width: 40, height: 40, border: 'none', background: '#e4e8eb', color: '#3498db', cursor: currentPage === pages.length - 1 ? 'not-allowed' : 'pointer'}}>&gt;</button>
+              </div>
+              <div style={{display:'flex', alignItems:'center', gap:8, marginLeft:'auto'}}>
+                <span style={{fontSize:'1.05rem', color:'#1976d2', fontWeight:500, marginRight:6}}>Добавить страницу</span>
+                <button onClick={handleAddPage} title="Создать страницу" style={{fontSize: 22, borderRadius: '50%', width: 44, height: 44, border: 'none', background: '#f6faff', color: '#3498db', boxShadow: '0 2px 8px #dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.2s, color 0.2s, box-shadow 0.2s'}}
+                  onMouseOver={e => {e.currentTarget.style.background='#e0f2fe'; e.currentTarget.style.color='#1976d2'; e.currentTarget.style.boxShadow='0 4px 16px #b3e0fc';}}
+                  onMouseOut={e => {e.currentTarget.style.background='#f6faff'; e.currentTarget.style.color='#3498db'; e.currentTarget.style.boxShadow='0 2px 8px #dbeafe';}}
+                >
+                  <FaPlus />
+                </button>
+              </div>
             </div>
           </div>
         </div>
